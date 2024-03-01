@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.1.0
+  flutter_native_splash: ^2.3.13
   sentry_flutter: ^7.16.1
 
 
@@ -20,3 +21,7 @@ dev_dependencies:
 flutter:
   assets:
     - .env
+
+# dart run flutter_native_splash:create
+flutter_native_splash:
+  background_image: splash.png

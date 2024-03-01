@@ -1,10 +1,14 @@
+import 'package:ass_downloader_example/config/app/routines/crash_watcher.dart';
 import 'package:ass_downloader_example/config/env/init.dart';
+import 'package:ass_downloader_example/config/widgets_binding/config.dart';
 import 'package:ass_downloader_example/services/logger/init.dart';
 import 'package:ass_downloader_example/use_case/i_use_case.dart';
 
-class InitializeApp with IUseCase<void, void> {
+/// params is `runApp` function
+class InitializeApp with IUseCase<Future<void> Function(), void> {
   @override
-  Future<void> execute({void params}) async {
+  Future<void> execute({required Future<void> Function() params}) async {
+    await ConfigWidgetsBinding().execute();
     await InitializeEnvironment().execute(
       params: [
         'DOMAIN_URL',
@@ -12,5 +16,9 @@ class InitializeApp with IUseCase<void, void> {
       ],
     );
     await InitializeLogger().execute();
+
+    await SetCrashWatcherOverAppRunner().execute(
+      params: params,
+    );
   }
 }
