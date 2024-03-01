@@ -2,10 +2,9 @@ import 'package:ass_downloader_example/config/env/env.dart';
 import 'package:ass_downloader_example/use_case/i_use_case.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-class SetCrashWatcherOverAppRunner
-    with IUseCase<Future<void> Function(), void> {
+class SetCrashWatcherOverAppRunner with IUseCase<void Function(), void> {
   @override
-  Future<void> execute({required Future<void> Function() params}) async {
+  Future<void> execute({required void Function() params}) async {
     await SentryFlutter.init(
       _sentryOptions,
       appRunner: () async => params(),

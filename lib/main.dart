@@ -1,12 +1,30 @@
+import 'package:ass_downloader_example/config/app/init.dart';
+import 'package:ass_downloader_example/config/widgets_binding/widgets_binding.dart';
 import 'package:flutter/widgets.dart';
 
 Future<void> main() async {
-  runApp(const MyApp());
+  await InitializeApp().execute(
+    params: () => runApp(
+      const MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(context) => const Center(child: Text('test', textDirection: TextDirection.ltr));
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    widgetsBinding.removeSplashScreen();
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      const Center(child: Text('test', textDirection: TextDirection.ltr));
 }

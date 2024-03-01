@@ -5,9 +5,9 @@ import 'package:ass_downloader_example/services/logger/init.dart';
 import 'package:ass_downloader_example/use_case/i_use_case.dart';
 
 /// params is `runApp` function
-class InitializeApp with IUseCase<Future<void> Function(), void> {
+class InitializeApp with IUseCase<void Function(), void> {
   @override
-  Future<void> execute({required Future<void> Function() params}) async {
+  Future<void> execute({required void Function() params}) async {
     await ConfigWidgetsBinding().execute();
     await InitializeEnvironment().execute(
       params: [

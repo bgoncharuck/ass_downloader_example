@@ -8,7 +8,7 @@ extension NativeSplashPreservation on WidgetsBinding {
     FlutterNativeSplash.preserve(widgetsBinding: this);
   }
 
-  void stopSplashScreen() {
+  void removeSplashScreen() {
     if (_splashScreenStopped) {
       return;
     }
