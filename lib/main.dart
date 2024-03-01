@@ -3,7 +3,7 @@ import 'package:ass_downloader_example/config/widgets_binding/widgets_binding.da
 import 'package:flutter/widgets.dart';
 
 Future<void> main() async {
-  await InitializeApp().execute(
+  await const InitializeApp().execute(
     params: () => runApp(
       const MyApp(),
     ),

@@ -6,18 +6,20 @@ import 'package:ass_downloader_example/use_case/i_use_case.dart';
 
 /// params is `runApp` function
 class InitializeApp with IUseCase<void Function(), void> {
+  const InitializeApp();
+
   @override
   Future<void> execute({required void Function() params}) async {
-    await ConfigWidgetsBinding().execute();
-    await InitializeEnvironment().execute(
+    await const ConfigWidgetsBinding().execute();
+    await const InitializeEnvironment().execute(
       params: [
         'DOMAIN_URL',
         'SENTRY_DSN',
       ],
     );
-    await InitializeLogger().execute();
+    await const InitializeLogger().execute();
 
-    await SetCrashWatcherOverAppRunner().execute(
+    await const SetCrashWatcherOverAppRunner().execute(
       params: params,
     );
   }

@@ -3,6 +3,8 @@ import 'package:ass_downloader_example/use_case/i_use_case.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 class SetCrashWatcherOverAppRunner with IUseCase<void Function(), void> {
+  const SetCrashWatcherOverAppRunner();
+
   @override
   Future<void> execute({required void Function() params}) async {
     await SentryFlutter.init(
