@@ -1,0 +1,27 @@
+name: ass_downloader_example
+description: Assets Downloader Example
+publish_to: 'none' 
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_dotenv: ^5.1.0
+  flutter_native_splash: ^2.3.13
+  sentry_flutter: ^7.16.1
+
+
+dev_dependencies:
+  flutter_lints: ^3.0.0
+  very_good_analysis: ^5.1.0
+
+flutter:
+  assets:
+    - .env
+
+# dart run flutter_native_splash:create
+flutter_native_splash:
+  background_image: splash.png
