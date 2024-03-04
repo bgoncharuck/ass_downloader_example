@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 import 'package:ass_downloader_example/services/asset_path/asset_path.dart';
+import 'package:path_provider/path_provider.dart';
 
-class DefaultAssetPath implements AssetPath {
+class MappedAssetPath implements AssetPath {
   final Map<String, String> _filePath = {};
 
   @override
