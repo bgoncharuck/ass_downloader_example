@@ -2,9 +2,9 @@ import 'package:ass_downloader_example/app/routes.dart';
 import 'package:ass_downloader_example/controllers/screen_controller.dart';
 import 'package:flutter/widgets.dart';
 
-class AnimalScreenController extends ScreenController {
-  AnimalScreenController({required this.animal});
-  final String animal;
+class AssetGroupScreenController extends ScreenController {
+  AssetGroupScreenController({required this.assetGroupName});
+  final String assetGroupName;
 
   void back(BuildContext context) {
     Navigator.of(context).pushNamed(
@@ -13,21 +13,21 @@ class AnimalScreenController extends ScreenController {
   }
 }
 
-class AnimalScreenLocator extends InheritedWidget {
-  const AnimalScreenLocator({
+class AssetGroupScreenLocator extends InheritedWidget {
+  const AssetGroupScreenLocator({
     required this.controller,
     required super.child,
     super.key,
   });
 
-  final AnimalScreenController controller;
+  final AssetGroupScreenController controller;
 
-  static AnimalScreenController of(BuildContext context) {
+  static AssetGroupScreenController of(BuildContext context) {
     final widget =
-        context.dependOnInheritedWidgetOfExactType<AnimalScreenLocator>();
+        context.dependOnInheritedWidgetOfExactType<AssetGroupScreenLocator>();
     if (widget == null) {
       throw FlutterError(
-        'AnimalScreenLocator not found in context.',
+        'AssetGroupScreenLocator not found in context.',
       );
     }
     return widget.controller;

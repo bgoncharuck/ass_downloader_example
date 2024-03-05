@@ -1,7 +1,7 @@
 import 'package:ass_downloader_example/screens/animal/animal_screen.dart';
 import 'package:ass_downloader_example/screens/animal/animal_screen_controller.dart';
-import 'package:ass_downloader_example/screens/animals/animals_screen.dart';
-import 'package:ass_downloader_example/screens/animals/animals_screen_controller.dart';
+import 'package:ass_downloader_example/screens/asset_groups/asset_groups_screen.dart';
+import 'package:ass_downloader_example/screens/asset_groups/asset_groups_screen_controller.dart';
 import 'package:ass_downloader_example/screens/menu/menu_screen.dart';
 import 'package:ass_downloader_example/screens/menu/menu_screen_controller.dart';
 import 'package:flutter/widgets.dart';
@@ -22,14 +22,18 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         child: const MenuScreen(),
       );
     case pathAnimals:
-      path = AnimalsScreenLocator(
-        controller: AnimalsScreenController(),
-        child: const AnimalsScreen(),
+      path = AssetGroupsScreenLocator(
+        controller: AssetGroupsScreenController(
+          assetGroupNames: arguments! as List<String>,
+        ),
+        child: const AssetGroupsScreen(),
       );
     case pathAnimal:
-      path = AnimalScreenLocator(
-        controller: AnimalScreenController(animal: arguments! as String),
-        child: const AnimalScreen(),
+      path = AssetGroupScreenLocator(
+        controller: AssetGroupScreenController(
+          assetGroupName: arguments! as String,
+        ),
+        child: const AssetGroupScreen(),
       );
     default:
       throw const RouteException('Route not found');
