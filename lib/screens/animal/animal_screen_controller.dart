@@ -8,7 +8,7 @@ class AssetGroupScreenController extends ScreenController {
 
   void back(BuildContext context) {
     Navigator.of(context).pushNamed(
-      pathAnimals,
+      pathGroups,
     );
   }
 }

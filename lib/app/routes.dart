@@ -7,8 +7,8 @@ import 'package:ass_downloader_example/screens/menu/menu_screen_controller.dart'
 import 'package:flutter/widgets.dart';
 
 const String pathMenu = '/menu';
-const String pathAnimals = '/animals';
-const String pathAnimal = '/animal';
+const String pathGroups = '/groups';
+const String pathGroup = '/group';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   final arguments = settings.arguments;
@@ -21,14 +21,14 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         controller: MenuScreenController(),
         child: const MenuScreen(),
       );
-    case pathAnimals:
+    case pathGroups:
       path = AssetGroupsScreenLocator(
         controller: AssetGroupsScreenController(
           assetGroupNames: arguments! as List<String>,
         ),
         child: const AssetGroupsScreen(),
       );
-    case pathAnimal:
+    case pathGroup:
       path = AssetGroupScreenLocator(
         controller: AssetGroupScreenController(
           assetGroupName: arguments! as String,
