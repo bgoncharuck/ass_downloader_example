@@ -5,5 +5,6 @@ abstract class DownloadStrategy {
   Future<DownloadResult> downloadFile({
     required String url,
     required String path,
+    String? id,
   });
 }
