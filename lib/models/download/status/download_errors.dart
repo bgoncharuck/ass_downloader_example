@@ -15,3 +15,20 @@ class NoUrlsProvidedInAssetGroupError extends DownloadError {
   @override
   String get name => 'no_urls_provided_in_group';
 }
+
+class SomeFilesWereNotDownloadedError extends DownloadError {
+  const SomeFilesWereNotDownloadedError(this.urls);
+
+  @override
+  String get name => 'some_files_not_downloaded';
+
+  final List<String> urls;
+}
+
+class NoFilesWereDownloadedSuccessfullyError
+    extends SomeFilesWereNotDownloadedError {
+  const NoFilesWereDownloadedSuccessfullyError(super.urls);
+
+  @override
+  String get name => 'no_files_downloaded_successfully';
+}

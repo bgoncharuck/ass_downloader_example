@@ -8,6 +8,7 @@ import 'package:ass_downloader_example/services/asset_path/asset_path.dart';
 import 'package:ass_downloader_example/services/assets_manager/assets_manager.dart';
 import 'package:ass_downloader_example/services/connection/connection_checker_strategy.dart';
 import 'package:ass_downloader_example/services/download_strategy/download_strategy.dart';
+import 'package:ass_downloader_example/services/logger/logger.dart';
 import 'package:shortid/shortid.dart';
 
 class DIAssetsManager implements AssetsManager {
@@ -50,9 +51,51 @@ class DIAssetsManager implements AssetsManager {
       return DownloadResult(
         id: uniqueId,
         url: '',
-        status: const FilesAreAlreadyDownloadedSuccess(),
+        status: const FilesAlreadyDownloaded(),
       );
     }
+
+    final downloadResults = await downloadFiles(missingFiles);
+    final successfullyDownloadedFiles = <String>[];
+    final failedDownloads = <String>[];
+
+    for (final result in downloadResults) {
+      if (result.status is DownloadSuccess) {
+        successfullyDownloadedFiles.add(result.url);
+      } else {
+        failedDownloads.add(result.url);
+      }
+    }
+
+    if (failedDownloads.isNotEmpty) {
+      await log.message(
+        'Files were not downloaded: ${failedDownloads.join(
+          ', ',
+        )}',
+      );
+
+      if (successfullyDownloadedFiles.isEmpty) {
+        return DownloadResult(
+          id: uniqueId,
+          url: '',
+          status: NoFilesWereDownloadedSuccessfullyError(failedDownloads),
+        );
+      }
+
+      return DownloadResult(
+        id: uniqueId,
+        url: '',
+        status: SomeFilesWereNotDownloadedError(failedDownloads),
+      );
+    }
+
+    return DownloadResult(
+      id: uniqueId,
+      url: '',
+      status: FilesWereDownloadedSuccessfully(
+        successfullyDownloadedFiles,
+      ),
+    );
   }
 
   Future<List<DownloadResult>> downloadFiles(Iterable<String> urls) async {
