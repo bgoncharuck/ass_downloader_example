@@ -1,4 +1,4 @@
-import 'package:ass_downloader_example/models/download/download_status.dart';
+import 'package:ass_downloader_example/models/download/status/download_status.dart';
 
 class DownloadResult {
   const DownloadResult({

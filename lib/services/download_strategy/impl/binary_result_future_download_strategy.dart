@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:ass_downloader_example/models/download/download_result.dart';
-import 'package:ass_downloader_example/models/download/download_status.dart';
+import 'package:ass_downloader_example/models/download/status/download_status.dart';
 import 'package:ass_downloader_example/services/download_strategy/download_strategy.dart';
 import 'package:ass_downloader_example/services/logger/logger.dart';
 import 'package:http/http.dart' as http;

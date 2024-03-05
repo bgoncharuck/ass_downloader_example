@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:ass_downloader_example/models/asset_group.dart';
-import 'package:ass_downloader_example/models/download/download_errors.dart';
 import 'package:ass_downloader_example/models/download/download_result.dart';
-import 'package:ass_downloader_example/models/download/download_status.dart';
+import 'package:ass_downloader_example/models/download/status/download_errors.dart';
+import 'package:ass_downloader_example/models/download/status/download_status.dart';
+import 'package:ass_downloader_example/models/download/status/download_success.dart';
 import 'package:ass_downloader_example/services/asset_path/asset_path.dart';
 import 'package:ass_downloader_example/services/assets_manager/assets_manager.dart';
 import 'package:ass_downloader_example/services/connection/connection_checker_strategy.dart';
@@ -35,10 +37,25 @@ class DIAssetsManager implements AssetsManager {
       );
     }
 
-    final urls = group.urls;
+    if (group.urls.isEmpty) {
+      return DownloadResult(
+        id: uniqueId,
+        url: '',
+        status: const NoUrlsProvidedInAssetGroupError(),
+      );
+    }
+
+    final missingFiles = await findMissingFileUrls(group.urls);
+    if (missingFiles.isEmpty) {
+      return DownloadResult(
+        id: uniqueId,
+        url: '',
+        status: const FilesAreAlreadyDownloadedSuccess(),
+      );
+    }
   }
 
-  Future<List<DownloadResult>> _downloadFiles(List<String> urls) async {
+  Future<List<DownloadResult>> downloadFiles(Iterable<String> urls) async {
     final downloadFutures = urls.map((url) async {
       final fileName = assetPath.getFileNameFromUrl(url);
       final savePath = await assetPath.fileSavePath(fileName);
@@ -47,6 +64,18 @@ class DIAssetsManager implements AssetsManager {
 
     final downloadResults = await Future.wait(downloadFutures);
     return downloadResults;
+  }
+
+  Future<List<String>> findMissingFileUrls(Iterable<String> urls) async {
+    final missingFiles = <String>[];
+    for (final url in urls) {
+      final fileName = assetPath.getFileNameFromUrl(url);
+      final filePath = await assetPath.fileSavePath(fileName);
+      if (!File(filePath).existsSync()) {
+        missingFiles.add(url);
+      }
+    }
+    return missingFiles;
   }
 
   @override
