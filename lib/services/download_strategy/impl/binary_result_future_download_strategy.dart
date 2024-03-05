@@ -6,6 +6,8 @@ import 'package:ass_downloader_example/services/logger/logger.dart';
 import 'package:http/http.dart' as http;
 import 'package:shortid/shortid.dart';
 
+/// simple http download through future
+/// that only gives information about if the download was successful
 class BinaryResultFutureDownloadStrategy implements DownloadStrategy {
   @override
   Future<DownloadResult> downloadFile({
