@@ -9,6 +9,8 @@ import 'package:shortid/shortid.dart';
 /// simple http download through future
 /// that only gives information about if the download was successful
 class BinaryResultFutureDownloadStrategy implements DownloadStrategy {
+  const BinaryResultFutureDownloadStrategy();
+
   @override
   Future<DownloadResult> downloadFile({
     required String url,

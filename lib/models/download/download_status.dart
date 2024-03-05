@@ -5,11 +5,15 @@ abstract class DownloadStatus {
 /// more specific error classes will be created later and
 /// will be used for type check is! DownloadError
 class DownloadError implements DownloadStatus {
+  const DownloadError();
+
   @override
-  final String name = 'error';
+  String get name => 'error';
 }
 
 class DownloadSuccess implements DownloadStatus {
+  const DownloadSuccess();
+
   @override
-  final String name = 'success';
+  String get name => 'success';
 }
