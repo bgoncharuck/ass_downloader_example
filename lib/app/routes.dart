@@ -1,6 +1,6 @@
 import 'package:ass_downloader_example/models/asset_group.dart';
-import 'package:ass_downloader_example/screens/asset_group_view/asset_group_view_screen.dart';
-import 'package:ass_downloader_example/screens/asset_group_view/asset_group_view_screen_controller.dart';
+import 'package:ass_downloader_example/screens/Image_asset_group_view/image_asset_group_view_screen.dart';
+import 'package:ass_downloader_example/screens/Image_asset_group_view/image_asset_group_view_screen_controller.dart';
 import 'package:ass_downloader_example/screens/asset_groups/asset_groups_screen.dart';
 import 'package:ass_downloader_example/screens/asset_groups/asset_groups_screen_controller.dart';
 import 'package:ass_downloader_example/screens/menu/menu_screen.dart';
@@ -30,12 +30,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         child: const AssetGroupsScreen(),
       );
     case pathGroup:
-      path = AssetGroupViewScreenLocator(
-        controller: AssetGroupViewScreenController(
+      path = ImageAssetGroupViewScreenLocator(
+        controller: ImageAssetGroupViewScreenController(
           fromAssetGroups: (arguments! as List)[0] as Map<String, AssetGroup>,
           assetGroupName: (arguments as List)[1] as String,
         ),
-        child: const AssetGroupViewScreen(),
+        child: const ImageAssetGroupViewScreen(),
       );
     default:
       throw const RouteException('Route not found');

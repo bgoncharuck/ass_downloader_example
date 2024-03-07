@@ -3,8 +3,8 @@ import 'package:ass_downloader_example/controllers/screen_controller.dart';
 import 'package:ass_downloader_example/models/asset_group.dart';
 import 'package:flutter/widgets.dart';
 
-class AssetGroupViewScreenController extends ScreenController {
-  AssetGroupViewScreenController({
+class ImageAssetGroupViewScreenController extends ScreenController {
+  ImageAssetGroupViewScreenController({
     required this.fromAssetGroups,
     required this.assetGroupName,
   });
@@ -12,7 +12,8 @@ class AssetGroupViewScreenController extends ScreenController {
   final Map<String, AssetGroup> fromAssetGroups;
   final String assetGroupName;
 
-  AssetGroup get aGroup => fromAssetGroups[assetGroupName]!;
+  ImageAssetGroup get aGroup =>
+      fromAssetGroups[assetGroupName]! as ImageAssetGroup;
 
   void back(BuildContext context) {
     Navigator.of(context).pushNamed(
@@ -22,21 +23,21 @@ class AssetGroupViewScreenController extends ScreenController {
   }
 }
 
-class AssetGroupViewScreenLocator extends InheritedWidget {
-  const AssetGroupViewScreenLocator({
+class ImageAssetGroupViewScreenLocator extends InheritedWidget {
+  const ImageAssetGroupViewScreenLocator({
     required this.controller,
     required super.child,
     super.key,
   });
 
-  final AssetGroupViewScreenController controller;
+  final ImageAssetGroupViewScreenController controller;
 
-  static AssetGroupViewScreenController of(BuildContext context) {
+  static ImageAssetGroupViewScreenController of(BuildContext context) {
     final widget = context
-        .dependOnInheritedWidgetOfExactType<AssetGroupViewScreenLocator>();
+        .dependOnInheritedWidgetOfExactType<ImageAssetGroupViewScreenLocator>();
     if (widget == null) {
       throw FlutterError(
-        'AssetGroupViewScreenLocator not found in context.',
+        'ImageAssetGroupViewScreenLocator not found in context.',
       );
     }
     return widget.controller;

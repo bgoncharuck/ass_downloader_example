@@ -1,7 +1,7 @@
 import 'package:ass_downloader_example/config/env/env.dart';
 import 'package:ass_downloader_example/models/asset_group.dart';
 
-class HorseAssetGroup extends DefaultAssetGroup {
+class HorseAssetGroup extends ImageAssetGroup {
   HorseAssetGroup()
       : super(
           groupName: 'horse',
@@ -14,6 +14,8 @@ class HorseAssetGroup extends DefaultAssetGroup {
             metal,
             water,
           ],
+          width: 120,
+          height: 120,
         );
 
   static const String white = 'assets/images/animal/horse/white.png';

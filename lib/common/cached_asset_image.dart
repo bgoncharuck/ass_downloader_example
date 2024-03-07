@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:ass_downloader_example/services/assets_manager/assets_manager.dart';
 import 'package:flutter/widgets.dart';
 
-class AssetImage extends StatefulWidget {
+class CachedAssetImage extends StatefulWidget {
   /// Precaches given asset and just returns ```Image``` as it is
-  const AssetImage(
+  const CachedAssetImage(
     this.asset, {
     this.width,
     this.height,
@@ -17,10 +17,10 @@ class AssetImage extends StatefulWidget {
   final BoxFit? fit;
 
   @override
-  State<AssetImage> createState() => _AssetImageState();
+  State<CachedAssetImage> createState() => _CachedAssetImageState();
 }
 
-class _AssetImageState extends State<AssetImage> {
+class _CachedAssetImageState extends State<CachedAssetImage> {
   late final Image cachedImage;
 
   @override

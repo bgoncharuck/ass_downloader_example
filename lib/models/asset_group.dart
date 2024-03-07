@@ -5,6 +5,19 @@ abstract class AssetGroup {
   Iterable<String> get urls;
 }
 
+class ImageAssetGroup extends DefaultAssetGroup {
+  ImageAssetGroup({
+    required super.groupName,
+    required super.baseUrl,
+    required super.assets,
+    required this.width,
+    required this.height,
+  });
+
+  final double width;
+  final double height;
+}
+
 class DefaultAssetGroup implements AssetGroup {
   DefaultAssetGroup({
     required this.groupName,
