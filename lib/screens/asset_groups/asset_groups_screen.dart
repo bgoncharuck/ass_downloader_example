@@ -22,10 +22,10 @@ class AssetGroupsScreen extends StatelessWidget {
                 ),
               ),
               SliverList.builder(
-                itemCount: screenController.assetGroupNames.length,
+                itemCount: screenController.assetGroups.length,
                 itemBuilder: (_, index) {
                   final groupKey =
-                      screenController.assetGroupNames.elementAt(index);
+                      screenController.assetGroups.keys.elementAt(index);
 
                   return CupertinoButton(
                     child: Text(groupKey),

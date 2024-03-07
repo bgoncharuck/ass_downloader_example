@@ -1,3 +1,4 @@
+import 'package:ass_downloader_example/models/asset_group.dart';
 import 'package:ass_downloader_example/screens/asset_group_view/asset_group_view_screen.dart';
 import 'package:ass_downloader_example/screens/asset_group_view/asset_group_view_screen_controller.dart';
 import 'package:ass_downloader_example/screens/asset_groups/asset_groups_screen.dart';
@@ -24,14 +25,14 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case pathGroups:
       path = AssetGroupsScreenLocator(
         controller: AssetGroupsScreenController(
-          assetGroupNames: arguments! as List<String>,
+          assetGroups: arguments! as Map<String, AssetGroup>,
         ),
         child: const AssetGroupsScreen(),
       );
     case pathGroup:
       path = AssetGroupViewScreenLocator(
         controller: AssetGroupViewScreenController(
-          fromAssetGroups: (arguments! as List)[0] as List<String>,
+          fromAssetGroups: (arguments! as List)[0] as Map<String, AssetGroup>,
           assetGroupName: (arguments as List)[1] as String,
         ),
         child: const AssetGroupViewScreen(),

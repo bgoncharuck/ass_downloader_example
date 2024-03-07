@@ -1,11 +1,12 @@
 import 'package:ass_downloader_example/app/routes.dart';
 import 'package:ass_downloader_example/controllers/screen_controller.dart';
+import 'package:ass_downloader_example/models/asset_group.dart';
 import 'package:flutter/widgets.dart';
 
 class AssetGroupsScreenController extends ScreenController {
-  AssetGroupsScreenController({required this.assetGroupNames});
+  AssetGroupsScreenController({required this.assetGroups});
 
-  final List<String> assetGroupNames;
+  final Map<String, AssetGroup> assetGroups;
 
   void back(BuildContext context) {
     Navigator.of(context).pushNamed(
@@ -17,7 +18,7 @@ class AssetGroupsScreenController extends ScreenController {
     Navigator.of(context).pushNamed(
       pathGroup,
       arguments: [
-        assetGroupNames,
+        assetGroups,
         assetGroupName,
       ],
     );

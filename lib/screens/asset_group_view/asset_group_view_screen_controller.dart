@@ -1,5 +1,6 @@
 import 'package:ass_downloader_example/app/routes.dart';
 import 'package:ass_downloader_example/controllers/screen_controller.dart';
+import 'package:ass_downloader_example/models/asset_group.dart';
 import 'package:flutter/widgets.dart';
 
 class AssetGroupViewScreenController extends ScreenController {
@@ -8,8 +9,10 @@ class AssetGroupViewScreenController extends ScreenController {
     required this.assetGroupName,
   });
 
-  final List<String> fromAssetGroups;
+  final Map<String, AssetGroup> fromAssetGroups;
   final String assetGroupName;
+
+  AssetGroup get aGroup => fromAssetGroups[assetGroupName]!;
 
   void back(BuildContext context) {
     Navigator.of(context).pushNamed(
