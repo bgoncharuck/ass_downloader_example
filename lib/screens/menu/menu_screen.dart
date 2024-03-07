@@ -24,25 +24,23 @@ class _MenuScreenState extends State<MenuScreen> {
       canPop: false,
       child: SafeArea(
         child: CupertinoPageScaffold(
-          child: Center(
-            child: CustomScrollView(
-              physics: const NeverScrollableScrollPhysics(),
-              slivers: [
-                SliverList.builder(
-                  itemCount: screenController.assetGroups.length,
-                  itemBuilder: (_, index) {
-                    final groupKey =
-                        screenController.assetGroups.keys.elementAt(index);
+          child: CustomScrollView(
+            physics: const NeverScrollableScrollPhysics(),
+            slivers: [
+              SliverList.builder(
+                itemCount: screenController.assetGroups.length,
+                itemBuilder: (_, index) {
+                  final groupKey =
+                      screenController.assetGroups.keys.elementAt(index);
 
-                    return CupertinoButton(
-                      child: Text(groupKey),
-                      onPressed: () =>
-                          screenController.selectAssetGroups(context, groupKey),
-                    );
-                  },
-                ),
-              ],
-            ),
+                  return CupertinoButton(
+                    child: Text(groupKey),
+                    onPressed: () =>
+                        screenController.selectAssetGroups(context, groupKey),
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),

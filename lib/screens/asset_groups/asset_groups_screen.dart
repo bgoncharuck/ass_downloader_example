@@ -16,6 +16,7 @@ class AssetGroupsScreen extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             slivers: [
               CupertinoSliverNavigationBar(
+                largeTitle: const Text('Asset Groups View'),
                 leading: CupertinoNavigationBarBackButton(
                   onPressed: () => screenController.back(context),
                 ),
