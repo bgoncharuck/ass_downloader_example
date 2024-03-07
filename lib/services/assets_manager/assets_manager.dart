@@ -1,7 +1,7 @@
 import 'package:ass_downloader_example/models/asset_group.dart';
 import 'package:ass_downloader_example/models/download/download_result.dart';
 
-AssetsManager? assetsManager;
+late final AssetsManager assetsManager;
 
 abstract class AssetsManager {
   Future<DownloadResult> syncAssetGroup({
