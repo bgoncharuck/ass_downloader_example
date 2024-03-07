@@ -9,6 +9,15 @@ class App extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         onGenerateRoute: generateRoute,
         initialRoute: pathMenu,
+        theme: const CupertinoThemeData.raw(
+          Brightness.dark,
+          CupertinoColors.activeBlue,
+          CupertinoColors.systemGreen,
+          CupertinoTextThemeData(),
+          CupertinoColors.darkBackgroundGray,
+          CupertinoColors.darkBackgroundGray,
+          true,
+        ),
         builder: (context, child) => MediaQuery(
           data: MediaQuery.of(context).copyWith(
             textScaler: TextScaler.noScaling,
