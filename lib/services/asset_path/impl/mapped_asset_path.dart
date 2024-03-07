@@ -38,7 +38,7 @@ class MappedAssetPath implements AssetPath {
   @override
   String getFileNameFromUrl(String url) {
     final uri = Uri.parse(url);
-    return uri.pathSegments.last;
+    return uri.path;
   }
 
   @override

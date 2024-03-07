@@ -26,16 +26,16 @@ class BinaryResultFutureDownloadStrategy implements DownloadStrategy {
         return DownloadResult(
           id: uniqueId,
           url: url,
-          status: DownloadError(),
+          status: const DownloadError(),
         );
       }
 
-      final file = File('');
+      final file = File(path);
       await file.writeAsBytes(response.bodyBytes);
       return DownloadResult(
         id: uniqueId,
         url: url,
-        status: DownloadSuccess(),
+        status: const DownloadSuccess(),
       );
     } catch (e, t) {
       await log.exception(e, t);
@@ -44,7 +44,7 @@ class BinaryResultFutureDownloadStrategy implements DownloadStrategy {
     return DownloadResult(
       id: uniqueId,
       url: url,
-      status: DownloadError(),
+      status: const DownloadError(),
     );
   }
 }

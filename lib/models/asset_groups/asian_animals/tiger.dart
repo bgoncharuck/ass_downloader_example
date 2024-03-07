@@ -4,8 +4,8 @@ import 'package:ass_downloader_example/models/asset_group.dart';
 class TigerAssetGroup extends DefaultAssetGroup {
   TigerAssetGroup()
       : super(
-          groupName: 'Tiger images Download Scenario',
-          baseUrl: '${env['DOMAIN_URL']}/assets/images/animal/tiger',
+          groupName: 'tiger',
+          baseUrl: env['DOMAIN_URL'],
           assets: [
             white,
             wood,
@@ -16,10 +16,10 @@ class TigerAssetGroup extends DefaultAssetGroup {
           ],
         );
 
-  static const String white = 'white.png';
-  static const String wood = 'wood.png';
-  static const String fire = 'fire.png';
-  static const String earth = 'earth.png';
-  static const String metal = 'metal.png';
-  static const String water = 'water.png';
+  static const String white = 'assets/images/animal/tiger/white.png';
+  static const String wood = 'assets/images/animal/tiger/wood.png';
+  static const String fire = 'assets/images/animal/tiger/fire.png';
+  static const String earth = 'assets/images/animal/tiger/earth.png';
+  static const String metal = 'assets/images/animal/tiger/metal.png';
+  static const String water = 'assets/images/animal/tiger/water.png';
 }
