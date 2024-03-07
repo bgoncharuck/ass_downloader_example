@@ -16,10 +16,10 @@ class MenuScreenController extends ScreenController {
     const RemoveNativeSplash().execute();
   }
 
-  void selectAssetGroups(BuildContext context, String assetGroupName) {
+  void selectAssetGroups(BuildContext context, String assetGroupsName) {
     Navigator.of(context).pushNamed(
       pathGroups,
-      arguments: assetGroups[assetGroupName],
+      arguments: assetGroups[assetGroupsName],
     );
   }
 }

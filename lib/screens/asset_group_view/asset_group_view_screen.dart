@@ -1,8 +1,8 @@
-import 'package:ass_downloader_example/screens/animal/animal_screen_controller.dart';
+import 'package:ass_downloader_example/screens/asset_group_view/asset_group_view_screen_controller.dart';
 import 'package:flutter/cupertino.dart';
 
-class AssetGroupScreen extends StatelessWidget {
-  const AssetGroupScreen({super.key});
+class AssetGroupViewScreen extends StatelessWidget {
+  const AssetGroupViewScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +13,10 @@ class AssetGroupScreen extends StatelessWidget {
           navigationBar: CupertinoNavigationBar(
             leading: CupertinoNavigationBarBackButton(
               onPressed: () =>
-                  AssetGroupScreenLocator.of(context).back(context),
+                  AssetGroupViewScreenLocator.of(context).back(context),
             ),
-            middle: Text(AssetGroupScreenLocator.of(context).assetGroupName),
+            middle:
+                Text(AssetGroupViewScreenLocator.of(context).assetGroupName),
           ),
           child: const Center(
             child: Column(

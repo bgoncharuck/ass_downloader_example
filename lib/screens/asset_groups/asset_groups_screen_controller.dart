@@ -12,6 +12,16 @@ class AssetGroupsScreenController extends ScreenController {
       pathMenu,
     );
   }
+
+  void selectAssetGroup(BuildContext context, String assetGroupName) {
+    Navigator.of(context).pushNamed(
+      pathGroup,
+      arguments: [
+        assetGroupNames,
+        assetGroupName,
+      ],
+    );
+  }
 }
 
 class AssetGroupsScreenLocator extends InheritedWidget {

@@ -6,27 +6,33 @@ class AssetGroupsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenController = AssetGroupsScreenLocator.of(context);
+
     return PopScope(
       canPop: false,
       child: SafeArea(
         child: CupertinoPageScaffold(
           navigationBar: CupertinoNavigationBar(
             leading: CupertinoNavigationBarBackButton(
-              onPressed: () =>
-                  AssetGroupsScreenLocator.of(context).back(context),
+              onPressed: () => screenController.back(context),
             ),
           ),
+          //
           child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CupertinoButton(
-                  child: const Text('Horse'),
-                  onPressed: () => Navigator.pushNamed(
-                    context,
-                    '/animal',
-                    arguments: 'horse',
-                  ),
+            child: CustomScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              slivers: [
+                SliverList.builder(
+                  itemBuilder: (_, index) {
+                    final groupKey =
+                        screenController.assetGroupNames.elementAt(index);
+
+                    return CupertinoButton(
+                      child: Text(groupKey),
+                      onPressed: () =>
+                          screenController.selectAssetGroup(context, groupKey),
+                    );
+                  },
                 ),
               ],
             ),

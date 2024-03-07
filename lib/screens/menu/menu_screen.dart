@@ -29,6 +29,7 @@ class _MenuScreenState extends State<MenuScreen> {
               physics: const NeverScrollableScrollPhysics(),
               slivers: [
                 SliverList.builder(
+                  itemCount: screenController.assetGroups.length,
                   itemBuilder: (_, index) {
                     final groupKey =
                         screenController.assetGroups.keys.elementAt(index);
