@@ -22,6 +22,11 @@ class ImageAssetGroupViewScreen extends StatelessWidget {
                   onPressed: () => screenController.back(context),
                 ),
               ),
+              const SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 34,
+                ),
+              ),
               SliverGrid.builder(
                 itemCount: screenController.aGroup.assets.length,
                 itemBuilder: (_, index) {
