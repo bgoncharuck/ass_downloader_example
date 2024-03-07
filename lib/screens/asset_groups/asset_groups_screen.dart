@@ -12,30 +12,28 @@ class AssetGroupsScreen extends StatelessWidget {
       canPop: false,
       child: SafeArea(
         child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBar(
-            leading: CupertinoNavigationBarBackButton(
-              onPressed: () => screenController.back(context),
-            ),
-          ),
-          //
-          child: Center(
-            child: CustomScrollView(
-              physics: const NeverScrollableScrollPhysics(),
-              slivers: [
-                SliverList.builder(
-                  itemBuilder: (_, index) {
-                    final groupKey =
-                        screenController.assetGroupNames.elementAt(index);
-
-                    return CupertinoButton(
-                      child: Text(groupKey),
-                      onPressed: () =>
-                          screenController.selectAssetGroup(context, groupKey),
-                    );
-                  },
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              CupertinoSliverNavigationBar(
+                leading: CupertinoNavigationBarBackButton(
+                  onPressed: () => screenController.back(context),
                 ),
-              ],
-            ),
+              ),
+              SliverList.builder(
+                itemCount: screenController.assetGroupNames.length,
+                itemBuilder: (_, index) {
+                  final groupKey =
+                      screenController.assetGroupNames.elementAt(index);
+
+                  return CupertinoButton(
+                    child: Text(groupKey),
+                    onPressed: () =>
+                        screenController.selectAssetGroup(context, groupKey),
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ),
