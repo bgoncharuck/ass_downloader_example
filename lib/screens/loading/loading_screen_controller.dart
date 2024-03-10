@@ -30,6 +30,7 @@ class LoadingScreenController extends ScreenController {
       }
     } catch (e, t) {
       await log.exception(e, t);
+      await loadAppAssets();
     }
   }
 
