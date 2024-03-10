@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 class HttpPingStrategy implements ConnectionCheckerStrategy {
   const HttpPingStrategy();
 
-  /// TODO: sort by ping
   @override
   Future<List<String>> isConnected(List<String> urls) async {
     final futures = <Future<String>>[];

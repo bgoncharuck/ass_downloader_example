@@ -25,7 +25,13 @@ class SyncAssets with IUseCase<void, DownloadResult> {
       ...asianAnimalsAssetGroups,
     ]);
 
-    if (downloadResults.any((result) => result is DownloadError)) {}
+    if (downloadResults.any((result) => result is DownloadError)) {
+      return const DownloadResult(
+        id: 'sync_assets',
+        url: '',
+        status: DownloadError(),
+      );
+    }
 
     return const DownloadResult(
       id: 'sync_assets',

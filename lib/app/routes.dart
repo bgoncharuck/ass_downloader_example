@@ -10,6 +10,8 @@ import 'package:flutter/widgets.dart';
 const String pathMenu = '/menu';
 const String pathGroups = '/groups';
 const String pathGroup = '/group';
+const String pathError = '/error';
+const String pathLoading = '/loading';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   final arguments = settings.arguments;

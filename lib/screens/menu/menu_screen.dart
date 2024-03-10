@@ -1,4 +1,3 @@
-import 'package:ass_downloader_example/models/asset_groups/asian_animals/asian_animals.dart';
 import 'package:ass_downloader_example/screens/menu/menu_screen_controller.dart';
 import 'package:flutter/cupertino.dart';
 
