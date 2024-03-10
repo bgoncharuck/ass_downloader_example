@@ -5,6 +5,7 @@ import 'package:ass_downloader_example/screens/asset_groups/asset_groups_screen.
 import 'package:ass_downloader_example/screens/asset_groups/asset_groups_screen_controller.dart';
 import 'package:ass_downloader_example/screens/error/error_screen.dart';
 import 'package:ass_downloader_example/screens/error/error_screen_controller.dart';
+import 'package:ass_downloader_example/screens/loading/loading_screen.dart';
 import 'package:ass_downloader_example/screens/loading/loading_screen_controller.dart';
 import 'package:ass_downloader_example/screens/menu/menu_screen.dart';
 import 'package:ass_downloader_example/screens/menu/menu_screen_controller.dart';

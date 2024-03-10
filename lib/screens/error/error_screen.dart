@@ -1,6 +1,5 @@
 import 'package:ass_downloader_example/screens/error/error_screen_controller.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 
 class ErrorScreen extends StatelessWidget {
   const ErrorScreen({super.key});
