@@ -9,6 +9,7 @@ class App extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         onGenerateRoute: generateRoute,
         initialRoute: pathLoading,
+        navigatorKey: navigatorKey,
         theme: const CupertinoThemeData.raw(
           Brightness.dark,
           CupertinoColors.activeBlue,

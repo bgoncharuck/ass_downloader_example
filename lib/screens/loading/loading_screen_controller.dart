@@ -1,16 +1,15 @@
 import 'package:ass_downloader_example/app/routes.dart';
 import 'package:ass_downloader_example/controllers/screen_controller.dart';
 import 'package:ass_downloader_example/models/download/status/download_status.dart';
+import 'package:ass_downloader_example/services/logger/logger.dart';
 import 'package:ass_downloader_example/use_case/domain/sync_assets.dart';
 import 'package:ass_downloader_example/use_case/presentation/remove_native_splash.dart';
 import 'package:flutter/widgets.dart';
 
 class LoadingScreenController extends ScreenController {
   LoadingScreenController();
-  late BuildContext context;
 
-  Future<void> init(BuildContext context) async {
-    this.context = context;
+  Future<void> init() async {
     await loadAppAssets();
 
     if (super.initOnce) {
@@ -20,24 +19,27 @@ class LoadingScreenController extends ScreenController {
   }
 
   Future<void> loadAppAssets() async {
-    final resultOfSync = await const SyncAssets().execute();
-    if (resultOfSync is DownloadError) {
-      onError('Unknown Error during downloading assets');
-    } else {
-      // ignore: use_build_context_synchronously
-      await Navigator.of(context).pushReplacementNamed(
-        pathMenu,
-      );
+    try {
+      final resultOfSync = await const SyncAssets().execute();
+      if (resultOfSync is DownloadError) {
+        onError('Unknown Error during downloading assets');
+      } else {
+        await navigatorKey.currentState!.pushReplacementNamed(
+          pathMenu,
+        );
+      }
+    } catch (e, t) {
+      await log.exception(e, t);
     }
   }
 
   void onError(String message) {
-    Navigator.of(context).pushReplacementNamed(
+    navigatorKey.currentState!.pushReplacementNamed(
       pathError,
       arguments: [
         message,
         () {
-          Navigator.of(context).pushReplacementNamed(
+          navigatorKey.currentState!.pushReplacementNamed(
             pathLoading,
           );
         },

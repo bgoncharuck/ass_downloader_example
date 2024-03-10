@@ -11,6 +11,7 @@ import 'package:ass_downloader_example/screens/menu/menu_screen.dart';
 import 'package:ass_downloader_example/screens/menu/menu_screen_controller.dart';
 import 'package:flutter/widgets.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 const String pathMenu = '/menu';
 const String pathGroups = '/groups';
 const String pathGroup = '/group';

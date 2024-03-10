@@ -12,7 +12,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    LoadingScreenLocator.of(context).init(context);
+    if (mounted) {
+      LoadingScreenLocator.of(context).init();
+    }
   }
 
   @override
