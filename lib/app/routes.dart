@@ -3,6 +3,9 @@ import 'package:ass_downloader_example/screens/Image_asset_group_view/image_asse
 import 'package:ass_downloader_example/screens/Image_asset_group_view/image_asset_group_view_screen_controller.dart';
 import 'package:ass_downloader_example/screens/asset_groups/asset_groups_screen.dart';
 import 'package:ass_downloader_example/screens/asset_groups/asset_groups_screen_controller.dart';
+import 'package:ass_downloader_example/screens/error/error_screen.dart';
+import 'package:ass_downloader_example/screens/error/error_screen_controller.dart';
+import 'package:ass_downloader_example/screens/loading/loading_screen_controller.dart';
 import 'package:ass_downloader_example/screens/menu/menu_screen.dart';
 import 'package:ass_downloader_example/screens/menu/menu_screen_controller.dart';
 import 'package:flutter/widgets.dart';
@@ -38,6 +41,19 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           assetGroupName: (arguments as List)[1] as String,
         ),
         child: const ImageAssetGroupViewScreen(),
+      );
+    case pathError:
+      path = ErrorScreenLocator(
+        controller: ErrorScreenController(
+          errorMessage: (arguments! as List)[0] as String,
+          action: (arguments as List)[1] as void Function(),
+        ),
+        child: const ErrorScreen(),
+      );
+    case pathLoading:
+      path = LoadingScreenLocator(
+        controller: LoadingScreenController(),
+        child: const LoadingScreen(),
       );
     default:
       throw const RouteException('Route not found');
