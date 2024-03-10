@@ -22,9 +22,13 @@ class MappedAssetPath implements AssetPath {
     return true;
   }
 
+  String? _savePath;
+
   @override
-  Future<String> get savePath async =>
-      (await getApplicationDocumentsDirectory()).path;
+  Future<String> get savePath async {
+    _savePath ??= (await getApplicationDocumentsDirectory()).path;
+    return _savePath!;
+  }
 
   @override
   Future<String> fileSavePath(String fileName) async =>
