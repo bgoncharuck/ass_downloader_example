@@ -30,7 +30,7 @@ class BinaryResultFutureDownloadStrategy implements DownloadStrategy {
         );
       }
 
-      final file = File(path);
+      final file = await File(path).create(recursive: true);
       await file.writeAsBytes(response.bodyBytes);
       return DownloadResult(
         id: uniqueId,

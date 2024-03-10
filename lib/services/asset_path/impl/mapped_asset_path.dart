@@ -28,7 +28,7 @@ class MappedAssetPath implements AssetPath {
 
   @override
   Future<String> fileSavePath(String fileName) async =>
-      '${await savePath}/$fileName';
+      '${await savePath}$fileName';
 
   @override
   String? getFilePath(String fileName) {

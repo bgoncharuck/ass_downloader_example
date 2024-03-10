@@ -8,7 +8,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) => CupertinoApp(
         debugShowCheckedModeBanner: false,
         onGenerateRoute: generateRoute,
-        initialRoute: pathMenu,
+        initialRoute: pathLoading,
         theme: const CupertinoThemeData.raw(
           Brightness.dark,
           CupertinoColors.activeBlue,

@@ -23,7 +23,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   Widget path;
   switch (settings.name) {
     case pathMenu:
-    case '/':
       path = MenuScreenLocator(
         controller: MenuScreenController(),
         child: const MenuScreen(),
@@ -52,6 +51,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         child: const ErrorScreen(),
       );
     case pathLoading:
+    case '/':
       path = LoadingScreenLocator(
         controller: LoadingScreenController(),
         child: const LoadingScreen(),
