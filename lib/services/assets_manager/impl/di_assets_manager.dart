@@ -69,11 +69,9 @@ class DIAssetsManager implements AssetsManager {
 
     final savePath = await assetPath.savePath;
     for (final url in successfullyDownloadedFiles) {
-      final file = assetPath.getFilePathByUrl(url)!;
-      assetPath.put(
-        file,
-        '$savePath/$file'..replaceAll('/', '//'),
-      );
+      final file = assetPath.getFileNameFromUrl(url);
+      final path = '$savePath/$file'..replaceAll('/', '//');
+      assetPath.put(file, path);
     }
 
     if (failedDownloads.isNotEmpty) {

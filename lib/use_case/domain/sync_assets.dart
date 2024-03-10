@@ -23,9 +23,12 @@ class SyncAssets with IUseCase<void, DownloadResult> {
         );
       }).toList();
 
-      final downloadResults = await Future.wait([
+      final downloadResults = <DownloadResult>[];
+      for (final downloadGroup in [
         ...asianAnimalsAssetGroups,
-      ]);
+      ]) {
+        downloadResults.add(await downloadGroup);
+      }
 
       if (downloadResults.any((result) => result is DownloadError)) {
         return const DownloadResult(

@@ -9,13 +9,11 @@ import 'package:flutter/widgets.dart';
 class LoadingScreenController extends ScreenController {
   LoadingScreenController();
 
-  Future<void> init() async {
-    await loadAppAssets();
-
+  void init() {
     if (super.initOnce) {
       return;
     }
-    await const RemoveNativeSplash().execute();
+    const RemoveNativeSplash().execute();
   }
 
   Future<void> loadAppAssets() async {
@@ -30,7 +28,6 @@ class LoadingScreenController extends ScreenController {
       }
     } catch (e, t) {
       await log.exception(e, t);
-      await loadAppAssets();
     }
   }
 

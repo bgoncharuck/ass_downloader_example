@@ -15,6 +15,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
     if (mounted) {
       LoadingScreenLocator.of(context).init();
     }
+    if (mounted) {
+      LoadingScreenLocator.of(context).loadAppAssets();
+    }
   }
 
   @override
