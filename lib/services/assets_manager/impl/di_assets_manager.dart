@@ -122,8 +122,7 @@ class DIAssetsManager implements AssetsManager {
     final missingFiles = <String>[];
     for (final url in urls) {
       final fileName = assetPath.getFileNameFromUrl(url);
-      final filePath = await assetPath.fileSavePath(fileName);
-      if (!File(filePath).existsSync()) {
+      if (!await assetPath.exists(fileName)) {
         missingFiles.add(url);
       }
     }
