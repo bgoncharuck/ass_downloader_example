@@ -1,5 +1,7 @@
 import 'package:ass_downloader_example/app/routes.dart';
 import 'package:ass_downloader_example/controllers/screen_controller.dart';
+import 'package:ass_downloader_example/models/download/status/download_status.dart';
+import 'package:ass_downloader_example/use_case/domain/sync_assets.dart';
 import 'package:ass_downloader_example/use_case/presentation/remove_native_splash.dart';
 import 'package:flutter/widgets.dart';
 
@@ -17,7 +19,17 @@ class LoadingScreenController extends ScreenController {
     await const RemoveNativeSplash().execute();
   }
 
-  Future<void> loadAppAssets() async {}
+  Future<void> loadAppAssets() async {
+    final resultOfSync = await const SyncAssets().execute();
+    if (resultOfSync is DownloadError) {
+      onError('Unknown Error during downloading assets');
+    } else {
+      // ignore: use_build_context_synchronously
+      await Navigator.of(context).pushReplacementNamed(
+        pathMenu,
+      );
+    }
+  }
 
   void onError(String message) {
     Navigator.of(context).pushReplacementNamed(
