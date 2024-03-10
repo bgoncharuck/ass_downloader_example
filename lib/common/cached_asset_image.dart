@@ -28,6 +28,7 @@ class _CachedAssetImageState extends State<CachedAssetImage> {
     super.initState();
 
     final path = assetsManager?.getAssetPath(widget.asset);
+    //
     if (path == null) {
       cachedImage = Image.asset(
         'assets/no_image.png',

@@ -28,10 +28,11 @@ class MappedAssetPath implements AssetPath {
 
   @override
   Future<String> fileSavePath(String fileName) async =>
-      '${await savePath}$fileName';
+      '${await savePath}/$fileName'..replaceAll('/', '//');
 
   @override
   String? getFilePath(String fileName) {
+    //
     return _filePath[fileName];
   }
 
