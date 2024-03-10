@@ -1,8 +1,22 @@
 import 'package:ass_downloader_example/controllers/screen_controller.dart';
+import 'package:ass_downloader_example/use_case/presentation/remove_native_splash.dart';
 import 'package:flutter/widgets.dart';
 
 class LoadingScreenController extends ScreenController {
   LoadingScreenController();
+
+  void init() {
+    if (super.initOnce) {
+      return;
+    }
+    const RemoveNativeSplash().execute();
+  }
+
+  late final BuildContext context;
+
+  Future<void> loadAppAssets() async {}
+
+  void onError() {}
 }
 
 class LoadingScreenLocator extends InheritedWidget {
