@@ -1,13 +1,19 @@
+import 'package:ass_downloader_example/app/routes.dart';
 import 'package:ass_downloader_example/controllers/screen_controller.dart';
-import 'package:ass_downloader_example/use_case/presentation/remove_native_splash.dart';
+import 'package:ass_downloader_example/models/asset_group.dart';
+import 'package:ass_downloader_example/models/asset_groups/asian_animals/asian_animals.dart';
 import 'package:flutter/widgets.dart';
 
 class MenuScreenController extends ScreenController {
-  void init() {
-    if (super.initOnce) {
-      return;
-    }
-    const RemoveNativeSplash().execute();
+  final Map<String, Map<String, AssetGroup>> assetGroups = {
+    'Asian Animals': asianAnimals,
+  };
+
+  void selectAssetGroups(BuildContext context, String assetGroupsName) {
+    Navigator.of(context).pushNamed(
+      pathGroups,
+      arguments: assetGroups[assetGroupsName],
+    );
   }
 }
 

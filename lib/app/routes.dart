@@ -1,14 +1,22 @@
-import 'package:ass_downloader_example/screens/animal/animal_screen.dart';
-import 'package:ass_downloader_example/screens/animal/animal_screen_controller.dart';
-import 'package:ass_downloader_example/screens/animals/animals_screen.dart';
-import 'package:ass_downloader_example/screens/animals/animals_screen_controller.dart';
+import 'package:ass_downloader_example/models/asset_group.dart';
+import 'package:ass_downloader_example/screens/Image_asset_group_view/image_asset_group_view_screen.dart';
+import 'package:ass_downloader_example/screens/Image_asset_group_view/image_asset_group_view_screen_controller.dart';
+import 'package:ass_downloader_example/screens/asset_groups/asset_groups_screen.dart';
+import 'package:ass_downloader_example/screens/asset_groups/asset_groups_screen_controller.dart';
+import 'package:ass_downloader_example/screens/error/error_screen.dart';
+import 'package:ass_downloader_example/screens/error/error_screen_controller.dart';
+import 'package:ass_downloader_example/screens/loading/loading_screen.dart';
+import 'package:ass_downloader_example/screens/loading/loading_screen_controller.dart';
 import 'package:ass_downloader_example/screens/menu/menu_screen.dart';
 import 'package:ass_downloader_example/screens/menu/menu_screen_controller.dart';
 import 'package:flutter/widgets.dart';
 
+late final GlobalKey<NavigatorState> navigatorKey;
 const String pathMenu = '/menu';
-const String pathAnimals = '/animals';
-const String pathAnimal = '/animal';
+const String pathGroups = '/groups';
+const String pathGroup = '/group';
+const String pathError = '/error';
+const String pathLoading = '/loading';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   final arguments = settings.arguments;
@@ -16,20 +24,38 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   Widget path;
   switch (settings.name) {
     case pathMenu:
-    case '/':
       path = MenuScreenLocator(
         controller: MenuScreenController(),
         child: const MenuScreen(),
       );
-    case pathAnimals:
-      path = AnimalsScreenLocator(
-        controller: AnimalsScreenController(),
-        child: const AnimalsScreen(),
+    case pathGroups:
+      path = AssetGroupsScreenLocator(
+        controller: AssetGroupsScreenController(
+          assetGroups: arguments! as Map<String, AssetGroup>,
+        ),
+        child: const AssetGroupsScreen(),
       );
-    case pathAnimal:
-      path = AnimalScreenLocator(
-        controller: AnimalScreenController(animal: arguments! as String),
-        child: const AnimalScreen(),
+    case pathGroup:
+      path = ImageAssetGroupViewScreenLocator(
+        controller: ImageAssetGroupViewScreenController(
+          fromAssetGroups: (arguments! as List)[0] as Map<String, AssetGroup>,
+          assetGroupName: (arguments as List)[1] as String,
+        ),
+        child: const ImageAssetGroupViewScreen(),
+      );
+    case pathError:
+      path = ErrorScreenLocator(
+        controller: ErrorScreenController(
+          errorMessage: (arguments! as List)[0] as String,
+          action: (arguments as List)[1] as void Function(),
+        ),
+        child: const ErrorScreen(),
+      );
+    case pathLoading:
+    case '/':
+      path = LoadingScreenLocator(
+        controller: LoadingScreenController(),
+        child: const LoadingScreen(),
       );
     default:
       throw const RouteException('Route not found');
