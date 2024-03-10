@@ -8,8 +8,8 @@ class MappedAssetPath implements AssetPath {
   @override
   Future<bool> exists(String fileName) async {
     final filePath = getFilePath(fileName);
-    if (filePath == null) {
-      return false;
+    if (filePath != null) {
+      return true;
     }
 
     final savePath = await fileSavePath(fileName);
