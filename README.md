@@ -6,6 +6,7 @@ The main feature is to download, cache, and use app assets from the backend. Thi
 
 Table of Contents:
 - [Use Case](#use-case)
+- [Controller](#controller)
 
 ## Use Case {#use-case}
 
@@ -20,3 +21,35 @@ mixin IUseCase<P, R> {
 }
 ```
 
+## Controller {#controller}
+
+I don't use any complex packages for logic controllers or state management.
+A simple controller with init and dispose methods is sufficient for most situations.
+You can then decide how to manage state within it, whether using the Reactive/Observable pattern or another approach.
+It is important not to be dependent on single approach for all problems.
+So you can use both Stream and ChangeNotifier as you find appropriate.
+
+What I find useful for all controllers are initOnce and disposeOnce methods. These methods act as gatekeepers, ensuring code runs only once during initialization and cleanup, respectively.
+
+```dart
+ void init() {
+    /// code that runs every time
+    //---
+    if (super.initOnce) {
+      return;
+    }
+    //---
+    /// code that runs once
+  }
+```
+
+I also use a controller hierarchy:
+```dart
+class ScreenController extends LogicController
+
+class ServiceController extends LogicController
+
+ImageAssetGroupViewScreenController extends ScreenController
+```
+
+This hierarchy facilitates code reuse by allowing common logic to be shared across different controller types.
