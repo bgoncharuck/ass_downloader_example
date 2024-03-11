@@ -12,34 +12,45 @@ import 'package:ass_downloader_example/screens/menu/menu_screen_controller.dart'
 import 'package:flutter/widgets.dart';
 
 late final GlobalKey<NavigatorState> navigatorKey;
+
+// Define constants for route paths
 const String pathMenu = '/menu';
 const String pathGroups = '/groups';
 const String pathGroup = '/group';
 const String pathError = '/error';
 const String pathLoading = '/loading';
 
+// Function to generate routes based on RouteSettings
 Route<dynamic> generateRoute(RouteSettings settings) {
+  // Extract arguments from settings
   final arguments = settings.arguments;
 
+  // Define a variable to hold the constructed widget tree for the route
   Widget path;
+
+  // Switch statement to handle different routes based on the name
   switch (settings.name) {
+    // Handle route with no arguments
     case pathMenu:
       path = MenuScreenLocator(
         controller: MenuScreenController(),
         child: const MenuScreen(),
       );
     case pathGroups:
+      // Handle route with a single argument (asset group path)
       path = AssetGroupsScreenLocator(
         controller: AssetGroupsScreenController(
-          assetGroups: arguments! as Map<String, AssetGroup>,
+          assetGroups: arguments! as Map<String, AssetGroup>, // Cast arguments
         ),
         child: const AssetGroupsScreen(),
       );
     case pathGroup:
+      // Handle route with multiple arguments
       path = ImageAssetGroupViewScreenLocator(
         controller: ImageAssetGroupViewScreenController(
           fromAssetGroups: (arguments! as List)[0] as Map<String, AssetGroup>,
           assetGroupName: (arguments as List)[1] as String,
+          // ... other arguments parsing logic (if applicable)
         ),
         child: const ImageAssetGroupViewScreen(),
       );
@@ -61,6 +72,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       throw const RouteException('Route not found');
   }
 
+  // Wrap the constructed route tree with a TransitionBuilder
+  // for a beautiful animation
   return TransitionBuilder(
     route: path,
   );

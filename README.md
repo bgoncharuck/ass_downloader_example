@@ -54,52 +54,63 @@ This hierarchy facilitates code reuse by allowing common logic to be shared acro
 
 Routing is simple and does not need any additional packages.
 ```dart
+// Define constants for route paths
 const String pathToScreenWithNoArguments = '/home';
 const String pathToScreenWithSingleArgument = '/imageView';
 const String pathToScreenWithMultipleArguments = '/searchResult';
 
+// Function to generate routes based on RouteSettings
 Route<dynamic> generateRoute(RouteSettings settings) {
+  // Extract arguments from settings
   final arguments = settings.arguments;
 
+  // Define a variable to hold the constructed widget tree for the route
   Widget path;
+
+  // Switch statement to handle different routes based on the name
   switch (settings.name) {
     case pathToScreenWithNoArguments:
     case '/':
-          path = HomeScreenLocator(
-            controller: HomeScreenController(),
-            child: const HomeScreen(),
-          );
+      // Handle route with no arguments
+      path = HomeScreenLocator(
+        controller: HomeScreenController(),
+        child: const HomeScreen(),
+      );
+      break;
     case pathToScreenWithSingleArgument:
+      // Handle route with a single argument
       path = ImageViewScreenLocator(
         controller: ImageViewScreenController(
-          // single argument
-          assetGroups: arguments! as String,
+          assetGroups: arguments! as String, // Cast arguments to String
         ),
         child: const ImageViewScreen(),
       );
+      break;
     case pathToScreenWithMultipleArguments:
+      // Handle route with multiple arguments
       path = SearchResultScreenLocator(
         controller: SearchResultScreenController(
-          // first argument
           fromAssetGroups: (arguments! as List)[0] as Map<String, Filter>,
-          // second argument
           assetGroupName: (arguments as List)[1] as String,
-          // ... all other arguments needed
+          // ... other arguments parsing logic (if applicable)
         ),
         child: const SearchResultScreen(),
       );
+      break;
     default:
       throw const RouteException('Route not found');
   }
 
+  // Wrap the constructed route tree with a TransitionBuilder
+  // for a beautiful animation
   return TransitionBuilder(
     route: path,
   );
 }
 ```
 
-That's all you need for routing with arguments using just a Flutter.
-The usage is stupidly simple too:
+This code demonstrates a simple routing implementation with arguments using only core Flutter functionalities.
+Using this routing approach is straightforward as well:
 
 ```dart
 Navigator.of(context).pushNamed(
