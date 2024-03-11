@@ -30,7 +30,7 @@ class SyncAssets with IUseCase<void, DownloadResult> {
         downloadResults.add(await downloadGroup);
       }
 
-      if (downloadResults.any((result) => result is DownloadError)) {
+      if (downloadResults.any((result) => result.status is DownloadError)) {
         return const DownloadResult(
           id: 'sync_assets',
           url: '',

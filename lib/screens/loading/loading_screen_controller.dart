@@ -19,6 +19,7 @@ class LoadingScreenController extends ScreenController {
   Future<void> loadAppAssets() async {
     try {
       final resultOfSync = await const SyncAssets().execute();
+      //
       if (resultOfSync is DownloadError) {
         onError('Unknown Error during downloading assets');
       } else {

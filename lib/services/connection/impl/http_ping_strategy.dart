@@ -1,4 +1,5 @@
 import 'package:ass_downloader_example/services/connection/connection_checker_strategy.dart';
+import 'package:ass_downloader_example/services/logger/logger.dart';
 import 'package:http/http.dart' as http;
 
 class HttpPingStrategy implements ConnectionCheckerStrategy {
@@ -12,9 +13,13 @@ class HttpPingStrategy implements ConnectionCheckerStrategy {
       futures.add(_notPing(url));
     }
 
-    final availableDomains = await Future.wait(futures);
-
-    return availableDomains.where((domain) => domain.isNotEmpty).toList();
+    try {
+      final availableDomains = await Future.wait(futures);
+      return availableDomains.where((domain) => domain.isNotEmpty).toList();
+    } catch (e, t) {
+      await log.exception(e, t);
+      return [];
+    }
   }
 
   Future<String> _notPing(String url) async {
