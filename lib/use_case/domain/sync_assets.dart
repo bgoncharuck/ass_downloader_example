@@ -1,6 +1,7 @@
 import 'package:ass_downloader_example/config/env/env.dart';
 import 'package:ass_downloader_example/models/asset_groups/asian_animals/asian_animals.dart';
 import 'package:ass_downloader_example/models/download/download_result.dart';
+import 'package:ass_downloader_example/models/download/status/download_errors.dart';
 import 'package:ass_downloader_example/models/download/status/download_status.dart';
 import 'package:ass_downloader_example/services/assets_manager/assets_manager.dart';
 import 'package:ass_downloader_example/services/assets_manager/impl/lightweight_assets_manager.dart';
@@ -30,14 +31,8 @@ class SyncAssets with IUseCase<void, DownloadResult> {
         downloadResults.add(await downloadGroup);
       }
 
-//
       if (downloadResults.any((result) => result.status.isError)) {
-        //
-        return const DownloadResult(
-          id: 'sync_assets',
-          url: '',
-          status: DownloadError(),
-        );
+        return errorPriority(downloadResults);
       }
 
       return const DownloadResult(
@@ -53,5 +48,28 @@ class SyncAssets with IUseCase<void, DownloadResult> {
         status: DownloadError(),
       );
     }
+  }
+
+  DownloadResult errorPriority(List<DownloadResult> results) {
+    DownloadResult? orderedResult;
+
+    orderedResult ??=
+        results.firstOccurrenceOfStatus<NoUrlsProvidedInAssetGroupError>();
+    orderedResult ??=
+        results.firstOccurrenceOfStatus<DomainsNotReachableError>();
+    orderedResult ??= results
+        .firstOccurrenceOfStatus<NoFilesWereDownloadedSuccessfullyError>();
+    orderedResult ??=
+        results.firstOccurrenceOfStatus<SomeFilesWereNotDownloadedError>();
+
+    if (orderedResult != null) {
+      return orderedResult;
+    }
+
+    return const DownloadResult(
+      id: 'sync_assets',
+      url: '',
+      status: DownloadError(),
+    );
   }
 }
