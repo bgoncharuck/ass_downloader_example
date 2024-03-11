@@ -1,6 +1,5 @@
 import 'package:ass_downloader_example/app/routes.dart';
 import 'package:ass_downloader_example/controllers/screen_controller.dart';
-import 'package:ass_downloader_example/models/download/status/download_status.dart';
 import 'package:ass_downloader_example/services/logger/logger.dart';
 import 'package:ass_downloader_example/use_case/domain/sync_assets.dart';
 import 'package:ass_downloader_example/use_case/presentation/remove_native_splash.dart';
