@@ -20,7 +20,7 @@ class LoadingScreenController extends ScreenController {
     try {
       final resultOfSync = await const SyncAssets().execute();
       //
-      if (resultOfSync is DownloadError) {
+      if (resultOfSync.status.isError) {
         onError('Unknown Error during downloading assets');
       } else {
         await navigatorKey.currentState!.pushReplacementNamed(
