@@ -143,3 +143,35 @@ Then you can use it like this:
     arguments: 'assets/images...',
   );
 ```
+@TODO:
+## Dividing screen logic from its design
+
+## .env
+
+## Native Splash Preservation
+
+## Logger
+
+## App Initialization
+
+## Internet Connection Check
+
+## Path Manager
+
+## Download Status
+
+## Download Result
+
+## Download Strategy
+
+## Download Strategies
+
+## Assets Manager
+
+## Assets Group (Download Scheme)
+
+## Assets Groups (Group of Download Schemes)
+
+## Image Assets Group
+
+## Precache Image into Context (No Blinks)
