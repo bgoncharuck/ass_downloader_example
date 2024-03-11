@@ -1,5 +1,6 @@
 import 'package:ass_downloader_example/app/routes.dart';
 import 'package:ass_downloader_example/controllers/screen_controller.dart';
+import 'package:ass_downloader_example/models/download/status/download_errors.dart';
 import 'package:ass_downloader_example/models/download/status/download_status.dart';
 import 'package:ass_downloader_example/services/logger/logger.dart';
 import 'package:ass_downloader_example/use_case/domain/sync_assets.dart';
@@ -19,8 +20,9 @@ class LoadingScreenController extends ScreenController {
   Future<void> loadAppAssets() async {
     try {
       final resultOfSync = await const SyncAssets().execute();
-      if (resultOfSync is DownloadError) {
-        onError('Unknown Error during downloading assets');
+      //
+      if (resultOfSync.status.isError) {
+        handleError(resultOfSync.status);
       } else {
         await navigatorKey.currentState!.pushReplacementNamed(
           pathMenu,
@@ -28,6 +30,31 @@ class LoadingScreenController extends ScreenController {
       }
     } catch (e, t) {
       await log.exception(e, t);
+    }
+  }
+
+  void handleError(DownloadStatus status) {
+    if (status is NoUrlsProvidedInAssetGroupError) {
+      onError(
+        'During executing download tasks no domains were provided, '
+        'contact the developer',
+      );
+    } else if (status is DomainsNotReachableError) {
+      onError(
+        'During executing download tasks some domains were not reachable: '
+        '${status.domains.join(', ')}',
+      );
+    } else if (status is NoFilesWereDownloadedSuccessfullyError) {
+      onError(
+        'No files were downloaded successfully',
+      );
+    } else if (status is SomeFilesWereNotDownloadedError) {
+      onError(
+        'Some files were not downloaded successfully: '
+        '${status.urls.join(', ')}',
+      );
+    } else {
+      onError('Unknown Error during downloading assets');
     }
   }
 

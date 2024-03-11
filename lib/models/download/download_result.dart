@@ -11,3 +11,14 @@ class DownloadResult {
   final String url;
   final DownloadStatus status;
 }
+
+extension DownloadResultExtension on Iterable<DownloadResult> {
+  DownloadResult? firstOccurrenceOfStatus<S extends DownloadStatus>() {
+    if (any((result) => result.status is S)) {
+      return firstWhere(
+        (result) => result.status is S,
+      );
+    }
+    return null;
+  }
+}

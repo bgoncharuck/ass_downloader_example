@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:ass_downloader_example/models/asset_group.dart';
 import 'package:ass_downloader_example/models/download/download_result.dart';
 import 'package:ass_downloader_example/models/download/status/download_errors.dart';
