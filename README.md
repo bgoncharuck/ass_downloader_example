@@ -49,3 +49,86 @@ ImageAssetGroupViewScreenController extends ScreenController
 ```
 
 This hierarchy facilitates code reuse by allowing common logic to be shared across different controller types.
+
+## Routing
+
+Routing is simple and does not need any additional packages.
+```dart
+const String pathToScreenWithNoArguments = '/home';
+const String pathToScreenWithSingleArgument = '/imageView';
+const String pathToScreenWithMultipleArguments = '/searchResult';
+
+Route<dynamic> generateRoute(RouteSettings settings) {
+  final arguments = settings.arguments;
+
+  Widget path;
+  switch (settings.name) {
+    case pathToScreenWithNoArguments:
+    case '/':
+          path = HomeScreenLocator(
+            controller: HomeScreenController(),
+            child: const HomeScreen(),
+          );
+    case pathToScreenWithSingleArgument:
+      path = ImageViewScreenLocator(
+        controller: ImageViewScreenController(
+          // single argument
+          assetGroups: arguments! as String,
+        ),
+        child: const ImageViewScreen(),
+      );
+    case pathToScreenWithMultipleArguments:
+      path = SearchResultScreenLocator(
+        controller: SearchResultScreenController(
+          // first argument
+          fromAssetGroups: (arguments! as List)[0] as Map<String, Filter>,
+          // second argument
+          assetGroupName: (arguments as List)[1] as String,
+          // ... all other arguments needed
+        ),
+        child: const SearchResultScreen(),
+      );
+    default:
+      throw const RouteException('Route not found');
+  }
+
+  return TransitionBuilder(
+    route: path,
+  );
+}
+```
+
+That's all you need for routing with arguments using just a Flutter.
+The usage is stupidly simple too:
+
+```dart
+Navigator.of(context).pushNamed(
+  pathToScreenWithSingleArgument,
+  arguments: 'assets/images...',
+);
+```
+
+Or, if you don't like using context, you can create a global key:
+```dart
+late final GlobalKey<NavigatorState> navigatorKey;
+
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    navigatorKey = GlobalKey<NavigatorState>();
+
+    return CupertinoApp(
+      //...
+      navigatorKey: navigatorKey,
+      //...
+```
+
+Then you can use it like this:
+```dart
+  navigatorKey.currentState!.pushNamed(
+    pathToScreenWithSingleArgument,
+    arguments: 'assets/images...',
+  );
+```
