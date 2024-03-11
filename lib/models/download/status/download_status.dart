@@ -1,5 +1,6 @@
 abstract class DownloadStatus {
   String get name;
+  bool get isError;
 }
 
 /// more specific error classes will be created later and
@@ -9,6 +10,9 @@ class DownloadError implements DownloadStatus {
 
   @override
   String get name => 'error';
+
+  @override
+  bool get isError => true;
 }
 
 class DownloadSuccess implements DownloadStatus {
@@ -16,4 +20,7 @@ class DownloadSuccess implements DownloadStatus {
 
   @override
   String get name => 'success';
+
+  @override
+  bool get isError => false;
 }
