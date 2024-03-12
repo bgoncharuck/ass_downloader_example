@@ -57,7 +57,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       // Handle route with multiple arguments
       path = ImageAssetGroupViewScreenLocator(
         controller: ImageAssetGroupViewScreenController(
-          fromAssetGroups: (arguments! as List)[0] as Map<String, AssetGroup>,
+          fromDownloadGroup: (arguments! as List)[0] as DownloadGroup,
           assetGroupName: (arguments as List)[1] as String,
           // ... other arguments parsing logic (if applicable)
         ),

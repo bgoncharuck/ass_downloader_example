@@ -22,7 +22,7 @@ class DownloadGroupScreenController extends ScreenController {
     Navigator.of(context).pushNamed(
       pathGroup,
       arguments: [
-        assetGroups,
+        downloadGroup,
         assetGroupName,
       ],
     );
