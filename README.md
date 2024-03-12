@@ -258,7 +258,7 @@ Native splash screen preservation is a technique that maintains the display of t
 * **Smooth transition:** Users experience a consistent visual transition from the native splash screen to the Flutter UI, enhancing the app's perceived polish and readiness.
 * **Faster load time perception:** Displaying the native splash screen creates the impression of a quicker launch, even if background initialization tasks are ongoing. Users often perceive faster loading times with visual feedback like a splash screen, compared to a blank screen during the loading process.
 
-Several plugins implement this this techniques, both natively on Android and iOS and as flutter plugins. In this project, I use the [flutter_native_splash](https://pub.dev/packages/flutter_native_splash) package.
+Several plugins implement this technique, both natively on Android and iOS and as flutter plugins. In this project, I use the [flutter_native_splash](https://pub.dev/packages/flutter_native_splash) package.
 
 The plugin utilizes `widgetBinding` for its functionality. Therefore, it's recommended to create an extension for this purpose:
 ```dart
