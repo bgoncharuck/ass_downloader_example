@@ -1,12 +1,12 @@
-import 'package:ass_downloader_example/screens/asset_groups/asset_groups_screen_controller.dart';
+import 'package:ass_downloader_example/screens/download_group/download_group_screen_controller.dart';
 import 'package:flutter/cupertino.dart';
 
-class AssetGroupsScreen extends StatelessWidget {
-  const AssetGroupsScreen({super.key});
+class DownloadGroupScreen extends StatelessWidget {
+  const DownloadGroupScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final screenController = AssetGroupsScreenLocator.of(context);
+    final screenController = DownloadGroupScreenLocator.of(context);
 
     return PopScope(
       canPop: false,
@@ -16,7 +16,7 @@ class AssetGroupsScreen extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             slivers: [
               CupertinoSliverNavigationBar(
-                largeTitle: const Text('Asset Groups View'),
+                largeTitle: Text(screenController.downloadGroup.name),
                 leading: CupertinoNavigationBarBackButton(
                   onPressed: () => screenController.back(context),
                 ),

@@ -16,10 +16,10 @@ class MenuScreen extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             slivers: [
               SliverList.builder(
-                itemCount: screenController.assetGroups.length,
+                itemCount: screenController.downloadGroups.length,
                 itemBuilder: (_, index) {
                   final groupKey =
-                      screenController.assetGroups.keys.elementAt(index);
+                      screenController.downloadGroups.keys.elementAt(index);
 
                   return CupertinoButton(
                     child: Text(groupKey),

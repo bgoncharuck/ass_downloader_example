@@ -14,6 +14,7 @@ class InitializeApp with IUseCase<void Function(), void> {
     await const InitializeEnvironment().execute(
       params: [
         'DOMAIN_URL',
+        'SECONDARY_DOMAIN_URL',
         'SENTRY_DSN',
       ],
     );

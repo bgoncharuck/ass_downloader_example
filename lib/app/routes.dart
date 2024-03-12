@@ -1,8 +1,8 @@
-import 'package:ass_downloader_example/models/asset_group.dart';
+import 'package:ass_downloader_example/models/download_group.dart';
 import 'package:ass_downloader_example/screens/Image_asset_group_view/image_asset_group_view_screen.dart';
 import 'package:ass_downloader_example/screens/Image_asset_group_view/image_asset_group_view_screen_controller.dart';
-import 'package:ass_downloader_example/screens/asset_groups/asset_groups_screen.dart';
-import 'package:ass_downloader_example/screens/asset_groups/asset_groups_screen_controller.dart';
+import 'package:ass_downloader_example/screens/download_group/download_group_screen.dart';
+import 'package:ass_downloader_example/screens/download_group/download_group_screen_controller.dart';
 import 'package:ass_downloader_example/screens/error/error_screen.dart';
 import 'package:ass_downloader_example/screens/error/error_screen_controller.dart';
 import 'package:ass_downloader_example/screens/loading/loading_screen.dart';
@@ -31,24 +31,32 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   // Switch statement to handle different routes based on the name
   switch (settings.name) {
     // Handle route with no arguments
+    case pathLoading:
+    case '/':
+      path = LoadingScreenLocator(
+        controller: LoadingScreenController(),
+        child: const LoadingScreen(),
+      );
+    // Handle route with a single argument (asset group path)
     case pathMenu:
       path = MenuScreenLocator(
-        controller: MenuScreenController(),
+        controller: MenuScreenController(
+          arguments! as Map<String, DownloadGroup>,
+        ),
         child: const MenuScreen(),
       );
     case pathGroups:
-      // Handle route with a single argument (asset group path)
-      path = AssetGroupsScreenLocator(
-        controller: AssetGroupsScreenController(
-          assetGroups: arguments! as Map<String, AssetGroup>, // Cast arguments
+      path = DownloadGroupScreenLocator(
+        controller: DownloadGroupScreenController(
+          downloadGroup: arguments! as DownloadGroup, // Cast arguments
         ),
-        child: const AssetGroupsScreen(),
+        child: const DownloadGroupScreen(),
       );
     case pathGroup:
       // Handle route with multiple arguments
       path = ImageAssetGroupViewScreenLocator(
         controller: ImageAssetGroupViewScreenController(
-          fromAssetGroups: (arguments! as List)[0] as Map<String, AssetGroup>,
+          fromDownloadGroup: (arguments! as List)[0] as DownloadGroup,
           assetGroupName: (arguments as List)[1] as String,
           // ... other arguments parsing logic (if applicable)
         ),
@@ -62,12 +70,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         ),
         child: const ErrorScreen(),
       );
-    case pathLoading:
-    case '/':
-      path = LoadingScreenLocator(
-        controller: LoadingScreenController(),
-        child: const LoadingScreen(),
-      );
+
     default:
       throw const RouteException('Route not found');
   }

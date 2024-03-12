@@ -3,6 +3,7 @@ import 'package:ass_downloader_example/models/download/download_result.dart';
 import 'package:ass_downloader_example/models/download/status/download_errors.dart';
 import 'package:ass_downloader_example/models/download/status/download_status.dart';
 import 'package:ass_downloader_example/models/download/status/download_success.dart';
+import 'package:ass_downloader_example/models/download_group.dart';
 import 'package:ass_downloader_example/services/asset_path/asset_path.dart';
 import 'package:ass_downloader_example/services/assets_manager/assets_manager.dart';
 import 'package:ass_downloader_example/services/connection/connection_checker_strategy.dart';
@@ -22,20 +23,140 @@ class DIAssetsManager implements AssetsManager {
   final AssetPath assetPath;
 
   @override
-  Future<DownloadResult> syncAssetGroup({
-    required AssetGroup group,
+  Future<DownloadResult> syncDownloadGroup({
+    required Iterable<DownloadGroup> groups,
     required List<String> appDomains,
     String? id,
   }) async {
     final uniqueId = id ?? shortid.generate();
+
+    /// select best domain and init download groups with it
     final reachableDomains = await connectionChecker.isConnected(appDomains);
     if (reachableDomains.isEmpty) {
+      /// check if app can be used offline
+      final canBeUsedOffline = await checkIfFilesAreAlreadyDownloaded(
+        groups: groups,
+        appDomains: appDomains,
+        id: uniqueId,
+      );
+      if (canBeUsedOffline != null) {
+        return canBeUsedOffline;
+      }
+
       return DownloadResult(
         id: uniqueId,
         url: '',
         status: DomainsNotReachableError(appDomains),
       );
     }
+    final selectedDomain = reachableDomains.first;
+    try {
+      for (final downloadGroup in groups) {
+        downloadGroup.init(selectedDomain);
+      }
+    } catch (e, t) {
+      await log.exception(e, t);
+      return DownloadResult(
+        id: id!,
+        url: '',
+        status: const DownloadGroupWasNotInitialized(),
+      );
+    }
+
+    /// create download scenarios
+    final downloadScenarios = <AssetGroup>[];
+    for (final downloadGroup in groups) {
+      downloadScenarios.addAll(downloadGroup.assets.values);
+    }
+
+    /// prepare downloads
+    final downloads = <Future<DownloadResult>>[];
+    for (final downloadScenario in downloadScenarios) {
+      downloads.add(
+        syncAssetGroup(group: downloadScenario),
+      );
+    }
+
+    /// download
+    final downloadResults = <DownloadResult>[];
+    try {
+      downloadResults.addAll(await Future.wait(downloads));
+    } catch (e, t) {
+      await log.exception(e, t);
+      return DownloadResult(
+        id: uniqueId,
+        url: '',
+        status: const EventLoopOverflowError(),
+      );
+    }
+
+    /// on any error return the most important one
+    if (downloadResults.any((result) => result.status.isError)) {
+      return errorPriority(downloadResults, id!);
+    }
+
+    return DownloadResult(
+      id: uniqueId,
+      url: '',
+
+      /// you can use FilesWereDownloadedSuccessfully if needed
+      status: const DownloadSuccess(),
+    );
+  }
+
+  Future<DownloadResult?> checkIfFilesAreAlreadyDownloaded({
+    required Iterable<DownloadGroup> groups,
+    required List<String> appDomains,
+    required String id,
+  }) async {
+    for (final group in groups) {
+      group.init(appDomains.first);
+    }
+    final listOfFiles = [
+      for (final group in groups)
+        for (final aGroup in group.assets.values) ...aGroup.urls,
+    ];
+
+    final missingFiles = await findMissingFileUrls(listOfFiles);
+    if (missingFiles.isEmpty) {
+      return DownloadResult(
+        id: id,
+        url: '',
+        status: FilesAlreadyDownloaded(fileUrls: listOfFiles),
+      );
+    }
+    return null;
+  }
+
+  DownloadResult errorPriority(List<DownloadResult> results, String id) {
+    DownloadResult? orderedResult;
+
+    orderedResult ??=
+        results.firstOccurrenceOfStatus<NoUrlsProvidedInAssetGroupError>();
+    orderedResult ??=
+        results.firstOccurrenceOfStatus<DomainsNotReachableError>();
+    orderedResult ??= results
+        .firstOccurrenceOfStatus<NoFilesWereDownloadedSuccessfullyError>();
+    orderedResult ??=
+        results.firstOccurrenceOfStatus<SomeFilesWereNotDownloadedError>();
+
+    if (orderedResult != null) {
+      return orderedResult;
+    }
+
+    return DownloadResult(
+      id: id,
+      url: '',
+      status: const DownloadError(),
+    );
+  }
+
+  @override
+  Future<DownloadResult> syncAssetGroup({
+    required AssetGroup group,
+    String? id,
+  }) async {
+    final uniqueId = id ?? shortid.generate();
 
     if (group.urls.isEmpty) {
       return DownloadResult(

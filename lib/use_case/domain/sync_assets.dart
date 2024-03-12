@@ -1,8 +1,7 @@
 import 'package:ass_downloader_example/config/env/env.dart';
-import 'package:ass_downloader_example/models/asset_groups/asian_animals/asian_animals.dart';
 import 'package:ass_downloader_example/models/download/download_result.dart';
-import 'package:ass_downloader_example/models/download/status/download_errors.dart';
 import 'package:ass_downloader_example/models/download/status/download_status.dart';
+import 'package:ass_downloader_example/models/download_groups/download_groups.dart';
 import 'package:ass_downloader_example/services/assets_manager/assets_manager.dart';
 import 'package:ass_downloader_example/services/assets_manager/impl/lightweight_assets_manager.dart';
 import 'package:ass_downloader_example/services/logger/logger.dart';
@@ -15,30 +14,14 @@ class SyncAssets with IUseCase<void, DownloadResult> {
   Future<DownloadResult> execute({void params}) async {
     try {
       assetsManager ??= LightweightAssetsManager();
-      final appDomains = [env['DOMAIN_URL']];
+      final appDomains = [
+        env['DOMAIN_URL'],
+        env['SECONDARY_DOMAIN_URL'],
+      ];
 
-      final asianAnimalsAssetGroups = asianAnimals.keys.map((name) async {
-        return assetsManager!.syncAssetGroup(
-          group: asianAnimals[name]!,
-          appDomains: appDomains,
-        );
-      }).toList();
-
-      final downloadResults = <DownloadResult>[];
-      for (final downloadGroup in [
-        ...asianAnimalsAssetGroups,
-      ]) {
-        downloadResults.add(await downloadGroup);
-      }
-
-      if (downloadResults.any((result) => result.status.isError)) {
-        return errorPriority(downloadResults);
-      }
-
-      return const DownloadResult(
-        id: 'sync_assets',
-        url: '',
-        status: DownloadSuccess(),
+      return await assetsManager!.syncDownloadGroup(
+        groups: downloadGroups.values,
+        appDomains: appDomains,
       );
     } catch (e, t) {
       await log.exception(e, t);
@@ -48,28 +31,5 @@ class SyncAssets with IUseCase<void, DownloadResult> {
         status: DownloadError(),
       );
     }
-  }
-
-  DownloadResult errorPriority(List<DownloadResult> results) {
-    DownloadResult? orderedResult;
-
-    orderedResult ??=
-        results.firstOccurrenceOfStatus<NoUrlsProvidedInAssetGroupError>();
-    orderedResult ??=
-        results.firstOccurrenceOfStatus<DomainsNotReachableError>();
-    orderedResult ??= results
-        .firstOccurrenceOfStatus<NoFilesWereDownloadedSuccessfullyError>();
-    orderedResult ??=
-        results.firstOccurrenceOfStatus<SomeFilesWereNotDownloadedError>();
-
-    if (orderedResult != null) {
-      return orderedResult;
-    }
-
-    return const DownloadResult(
-      id: 'sync_assets',
-      url: '',
-      status: DownloadError(),
-    );
   }
 }

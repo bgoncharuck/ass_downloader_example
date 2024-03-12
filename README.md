@@ -168,9 +168,9 @@ Then you can use it like this:
 
 ## Assets Manager
 
-## Assets Group (Download Scheme)
+## Asset Group
 
-## Assets Groups (Group of Download Schemes)
+## DownloadGroup
 
 ## Image Assets Group
 
