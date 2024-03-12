@@ -16,6 +16,7 @@ class SyncAssets with IUseCase<void, DownloadResult> {
       assetsManager ??= LightweightAssetsManager();
       final appDomains = [
         env['DOMAIN_URL'],
+        env['SECONDARY_DOMAIN_URL'],
       ];
 
       return await assetsManager!.syncDownloadGroup(
