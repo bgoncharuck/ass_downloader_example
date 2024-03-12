@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 
 class MenuScreenController extends ScreenController {
   final Map<String, Map<String, AssetGroup>> assetGroups = {
-    'Asian Animals': asianAnimals,
+    'Asian Animals': asianAnimals.assets,
   };
 
   void selectAssetGroups(BuildContext context, String assetGroupsName) {

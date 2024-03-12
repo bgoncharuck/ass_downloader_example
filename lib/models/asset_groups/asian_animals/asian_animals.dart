@@ -11,18 +11,29 @@ import 'package:ass_downloader_example/models/asset_groups/asian_animals/rat.dar
 import 'package:ass_downloader_example/models/asset_groups/asian_animals/rooster.dart';
 import 'package:ass_downloader_example/models/asset_groups/asian_animals/snake.dart';
 import 'package:ass_downloader_example/models/asset_groups/asian_animals/tiger.dart';
+import 'package:ass_downloader_example/models/download_group.dart';
 
-final asianAnimals = <String, AssetGroup>{
-  'tiger': TigerAssetGroup(),
-  'rabbit': RabbitAssetGroup(),
-  'dragon': DragonAssetGroup(),
-  'snake': SnakeAssetGroup(),
-  'horse': HorseAssetGroup(),
-  'goat': GoatAssetGroup(),
-  'monkey': MonkeyAssetGroup(),
-  'rooster': RoosterAssetGroup(),
-  'dog': DogAssetGroup(),
-  'pig': PigAssetGroup(),
-  'rat': RatAssetGroup(),
-  'ox': OxAssetGroup(),
-};
+final DownloadGroup asianAnimals = AsianAnimals();
+
+class AsianAnimals implements DownloadGroup {
+  @override
+  Map<String, AssetGroup> assets = {};
+
+  @override
+  void init(String domain) {
+    assets = <String, AssetGroup>{
+      'tiger': TigerAssetGroup(domain),
+      'rabbit': RabbitAssetGroup(domain),
+      'dragon': DragonAssetGroup(domain),
+      'snake': SnakeAssetGroup(domain),
+      'horse': HorseAssetGroup(domain),
+      'goat': GoatAssetGroup(domain),
+      'monkey': MonkeyAssetGroup(domain),
+      'rooster': RoosterAssetGroup(domain),
+      'dog': DogAssetGroup(domain),
+      'pig': PigAssetGroup(domain),
+      'rat': RatAssetGroup(domain),
+      'ox': OxAssetGroup(domain),
+    };
+  }
+}

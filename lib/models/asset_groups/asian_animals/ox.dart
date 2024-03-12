@@ -1,11 +1,10 @@
-import 'package:ass_downloader_example/config/env/env.dart';
 import 'package:ass_downloader_example/models/asset_group.dart';
 
 class OxAssetGroup extends ImageAssetGroup {
-  OxAssetGroup()
+  OxAssetGroup(String domain)
       : super(
           groupName: 'ox',
-          baseUrl: env['DOMAIN_URL'],
+          baseUrl: domain,
           assets: [
             white,
             wood,

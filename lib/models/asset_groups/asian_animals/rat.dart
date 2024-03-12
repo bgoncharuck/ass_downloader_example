@@ -1,11 +1,10 @@
-import 'package:ass_downloader_example/config/env/env.dart';
 import 'package:ass_downloader_example/models/asset_group.dart';
 
 class RatAssetGroup extends ImageAssetGroup {
-  RatAssetGroup()
+  RatAssetGroup(String domain)
       : super(
           groupName: 'rat',
-          baseUrl: env['DOMAIN_URL'],
+          baseUrl: domain,
           assets: [
             white,
             wood,

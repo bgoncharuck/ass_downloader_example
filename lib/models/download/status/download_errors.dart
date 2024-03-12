@@ -32,3 +32,17 @@ class NoFilesWereDownloadedSuccessfullyError
   @override
   String get name => 'no_files_downloaded_successfully';
 }
+
+class DownloadGroupWasNotInitialized extends DownloadError {
+  const DownloadGroupWasNotInitialized();
+
+  @override
+  String get name => 'download_group_was_not_initialized';
+}
+
+class EventLoopOverflowError extends DownloadError {
+  const EventLoopOverflowError();
+
+  @override
+  String get name => 'event_loop_overflow_error';
+}
