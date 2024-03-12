@@ -1,7 +1,7 @@
 import 'package:ass_downloader_example/config/env/env.dart';
-import 'package:ass_downloader_example/models/asset_groups/asian_animals/asian_animals.dart';
 import 'package:ass_downloader_example/models/download/download_result.dart';
 import 'package:ass_downloader_example/models/download/status/download_status.dart';
+import 'package:ass_downloader_example/models/download_groups/download_groups.dart';
 import 'package:ass_downloader_example/services/assets_manager/assets_manager.dart';
 import 'package:ass_downloader_example/services/assets_manager/impl/lightweight_assets_manager.dart';
 import 'package:ass_downloader_example/services/logger/logger.dart';
@@ -17,12 +17,9 @@ class SyncAssets with IUseCase<void, DownloadResult> {
       final appDomains = [
         env['DOMAIN_URL'],
       ];
-      final downloadGroups = [
-        AsianAnimals(),
-      ];
 
       return await assetsManager!.syncDownloadGroup(
-        groups: downloadGroups,
+        groups: downloadGroups.values.toList(),
         appDomains: appDomains,
       );
     } catch (e, t) {

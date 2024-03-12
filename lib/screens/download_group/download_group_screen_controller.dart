@@ -1,16 +1,20 @@
 import 'package:ass_downloader_example/app/routes.dart';
 import 'package:ass_downloader_example/controllers/screen_controller.dart';
 import 'package:ass_downloader_example/models/asset_group.dart';
+import 'package:ass_downloader_example/models/download_group.dart';
+import 'package:ass_downloader_example/models/download_groups/download_groups.dart';
 import 'package:flutter/widgets.dart';
 
-class AssetGroupsScreenController extends ScreenController {
-  AssetGroupsScreenController({required this.assetGroups});
+class DownloadGroupScreenController extends ScreenController {
+  DownloadGroupScreenController({required this.downloadGroup});
 
-  final Map<String, AssetGroup> assetGroups;
+  final DownloadGroup downloadGroup;
+  Map<String, AssetGroup> get assetGroups => downloadGroup.assets;
 
   void back(BuildContext context) {
     Navigator.of(context).pushNamed(
       pathMenu,
+      arguments: downloadGroups,
     );
   }
 
@@ -25,21 +29,21 @@ class AssetGroupsScreenController extends ScreenController {
   }
 }
 
-class AssetGroupsScreenLocator extends InheritedWidget {
-  const AssetGroupsScreenLocator({
+class DownloadGroupScreenLocator extends InheritedWidget {
+  const DownloadGroupScreenLocator({
     required this.controller,
     required super.child,
     super.key,
   });
 
-  final AssetGroupsScreenController controller;
+  final DownloadGroupScreenController controller;
 
-  static AssetGroupsScreenController of(BuildContext context) {
-    final widget =
-        context.dependOnInheritedWidgetOfExactType<AssetGroupsScreenLocator>();
+  static DownloadGroupScreenController of(BuildContext context) {
+    final widget = context
+        .dependOnInheritedWidgetOfExactType<DownloadGroupScreenLocator>();
     if (widget == null) {
       throw FlutterError(
-        'AssetGroupsScreenLocator not found in context.',
+        'DownloadGroupScreenLocator not found in context.',
       );
     }
     return widget.controller;

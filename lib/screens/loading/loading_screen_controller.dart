@@ -1,5 +1,7 @@
 import 'package:ass_downloader_example/app/routes.dart';
 import 'package:ass_downloader_example/controllers/screen_controller.dart';
+import 'package:ass_downloader_example/models/download_groups/asian_animals/asian_animals.dart';
+import 'package:ass_downloader_example/models/download_groups/download_groups.dart';
 import 'package:ass_downloader_example/models/download/status/download_errors.dart';
 import 'package:ass_downloader_example/models/download/status/download_status.dart';
 import 'package:ass_downloader_example/services/logger/logger.dart';
@@ -26,6 +28,7 @@ class LoadingScreenController extends ScreenController {
       } else {
         await navigatorKey.currentState!.pushReplacementNamed(
           pathMenu,
+          arguments: downloadGroups,
         );
       }
     } catch (e, t) {
