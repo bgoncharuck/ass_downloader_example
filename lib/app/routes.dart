@@ -1,4 +1,3 @@
-import 'package:ass_downloader_example/models/asset_group.dart';
 import 'package:ass_downloader_example/models/download_group.dart';
 import 'package:ass_downloader_example/screens/Image_asset_group_view/image_asset_group_view_screen.dart';
 import 'package:ass_downloader_example/screens/Image_asset_group_view/image_asset_group_view_screen_controller.dart';

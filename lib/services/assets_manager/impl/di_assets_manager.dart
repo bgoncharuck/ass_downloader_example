@@ -125,6 +125,7 @@ class DIAssetsManager implements AssetsManager {
         status: FilesAlreadyDownloaded(fileUrls: listOfFiles),
       );
     }
+    return null;
   }
 
   DownloadResult errorPriority(List<DownloadResult> results, String id) {
