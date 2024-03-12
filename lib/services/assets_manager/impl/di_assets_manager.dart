@@ -68,9 +68,9 @@ class DIAssetsManager implements AssetsManager {
     }
 
     /// download
-    var downloadResults = <DownloadResult>[];
+    final downloadResults = <DownloadResult>[];
     try {
-      downloadResults = await Future.wait(downloads);
+      downloadResults.addAll(await Future.wait(downloads));
     } catch (e, t) {
       await log.exception(e, t);
       return DownloadResult(

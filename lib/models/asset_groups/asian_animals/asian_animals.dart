@@ -21,7 +21,7 @@ class AsianAnimals implements DownloadGroup {
 
   @override
   void init(String domain) {
-    assets = <String, AssetGroup>{
+    assets.addAll({
       'tiger': TigerAssetGroup(domain),
       'rabbit': RabbitAssetGroup(domain),
       'dragon': DragonAssetGroup(domain),
@@ -34,6 +34,6 @@ class AsianAnimals implements DownloadGroup {
       'pig': PigAssetGroup(domain),
       'rat': RatAssetGroup(domain),
       'ox': OxAssetGroup(domain),
-    };
+    });
   }
 }
