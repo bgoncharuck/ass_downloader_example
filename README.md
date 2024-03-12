@@ -143,13 +143,147 @@ Then you can use it like this:
     arguments: 'assets/images...',
   );
 ```
-@TODO:
 ## Dividing screen logic from its design
+
+UI implementations are susceptible to frequent changes. This includes not only the visual design but also aspects like asset usage, adaptability, and accessibility, which continuously evolve. With advancements like code-push and server-driven UI, app design can become even more dynamic than previously anticipated.
+
+Therefore,  separating the logic of each screen from its UI becomes crucial. This project demonstrates this concept using Screen Controllers and their Locators.
+
+For example, if I know that we'll need to remove native splash no matter what design will be in the future, then I'm adding it into the LoadingScreenController:
+```dart
+  void init() {
+    if (super.initOnce) {
+      return;
+    }
+    const RemoveNativeSplash().execute();
+  }
+```
+
+And using it in the LoadingScreen:
+```dart
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (mounted) {
+      LoadingScreenLocator.of(context).init();
+    }
+```
+
+Or if I know that asset groups will be displayed on the DownloadGroupScreen, I am adding them into DownloadGroupScreenController regardless of the current UI implementation. 
+For now it's a SliverList builder, but in the future it can be a grid view or something more complex:
+```dart
+SliverList.builder(
+                itemCount: screenController.assetGroups.length,
+                itemBuilder: (_, index) {
+                  final groupKey =
+                      screenController.assetGroups.keys.elementAt(index);
+```
+
+Or if I use route navigation arguments extensively, it makes sense to put this logic into the controller:
+```dart
+  void selectAssetGroup(BuildContext context, String assetGroupName) {
+    Navigator.of(context).pushNamed(
+      pathGroup,
+      arguments: [
+        downloadGroup,
+        assetGroupName,
+      ],
+    );
+```
 
 ## .env
 
+Environment variables are dynamic values used within an app to customize its behavior based on the environment it runs in (e.g., production, staging, development). They can also be used to differentiate releases based on factors like:
+
+* **Country:** Different server URLs for Asia and Europe.
+* **User groups:** Different API keys for different user groups.
+* **Functionality:** Remove or add functionality based on legal requirements in certain countries.
+
+Environment variables are typically stored inside a `.env` file, which is a plain text file containing key-value pairs. Each line in the file represents one variable and its corresponding value.
+
+There are various plugins to work with `.env` files, both on the client (app) and server side.
+On the app side, it's crucial to:
+
+1. **Check for Missing Values:** Verify that all necessary environment variables have been added to the `.env` file.
+2. **Validate Values:** Ensure the retrieved values are valid (not null or empty).
+3. **Throw Exceptions:** If any variables are missing or invalid, throw an exception to prevent the app from running with potentially incorrect configurations.
+
+
+```dart
+  void _validateVar(String name, String? value) {
+    if (value == null || value.isEmpty) {
+      throw Exception('Missing or invalid .env: $name');
+    }
+  }
+```
+
+For most projects I've worked on, this Environment contract has proven sufficient:
+```dart
+abstract class Environment {
+  void operator []=(String name, String? value);
+  String operator [](String name);
+  Map<String, String> get asMap;
+  /// must validate every variable during the load
+  Future<bool> load(List<String> variables);
+}
+```
+
+(not used in this project example)
+The other useful thing you can do with Environment is proxy:
+```dart
+  void operator []=(String name, String? value) {
+    _validateVar(name, value);
+    if (_canBeUpdated(name)) {
+      _box.put(name, value!);
+    }
+  }
+```
+
+### .env for this project example
+
+In this example, I've created an app asset `.env` with this content:
+```shell
+DOMAIN_URL=https://bazilodestar.com
+# TODO
+SECONDARY_DOMAIN_URL=https://bazilodestar.com
+SENTRY_DSN=https://53350b430e17b2286ac56ad9ee41a293@o379920.ingest.us.sentry.io/4506893446414336
+```
+And used plugin [flutter_dotenv](https://pub.dev/packages/flutter_dotenv) to load it with a wrapper in `lib/config/env/plugins/flutter_dotenv.dart`
+
 ## Native Splash Preservation
 
+Native splash screen preservation is a technique that maintains the display of the native splash screen until the Flutter application has fully initialized. This ensures a smoother and more cohesive user experience.
+
+**Why**
+
+* **Smooth transition:** Users experience a consistent visual transition from the native splash screen to the Flutter UI, enhancing the app's perceived polish and readiness.
+* **Faster load time perception:** Displaying the native splash screen creates the impression of a quicker launch, even if background initialization tasks are ongoing. Users often perceive faster loading times with visual feedback like a splash screen, compared to a blank screen during the loading process.
+
+Several plugins implement this technique, both natively on Android and iOS and as flutter plugins. In this project, I use the [flutter_native_splash](https://pub.dev/packages/flutter_native_splash) package.
+
+The plugin utilizes `widgetBinding` for its functionality. Therefore, it's recommended to create an extension for this purpose:
+```dart
+bool _splashScreenStopped = false;
+
+extension NativeSplashPreservation on WidgetsBinding {
+  void preserveSplashScreen() {
+    FlutterNativeSplash.preserve(widgetsBinding: this);
+  }
+
+  void removeSplashScreen() {
+    /// native splash can be removed only once
+    if (_splashScreenStopped) {
+      return;
+    }
+    FlutterNativeSplash.remove();
+    _splashScreenStopped = true;
+  }
+}
+```
+
+Then call preserveSplashScreen() on widgetsBinding before the app runner and any services initialization/dependency injection tasks.
+And removeSplashScreen() after the first app screen is fully initialized.
+
+@TODO:
 ## Logger
 
 ## App Initialization

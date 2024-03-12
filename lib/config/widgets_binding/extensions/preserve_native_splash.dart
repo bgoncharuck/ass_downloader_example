@@ -9,6 +9,7 @@ extension NativeSplashPreservation on WidgetsBinding {
   }
 
   void removeSplashScreen() {
+    /// native splash can be removed only once
     if (_splashScreenStopped) {
       return;
     }

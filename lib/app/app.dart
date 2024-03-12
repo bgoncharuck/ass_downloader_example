@@ -22,12 +22,6 @@ class App extends StatelessWidget {
         CupertinoColors.darkBackgroundGray,
         true,
       ),
-      builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(
-          textScaler: TextScaler.noScaling,
-        ),
-        child: child!,
-      ),
     );
   }
 }
