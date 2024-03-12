@@ -190,9 +190,66 @@ Or if I use route navigation arguments extensively, it makes sense to put this l
     );
 ```
 
-@TODO:
 ## .env
 
+Environment variables are dynamic values used within an app to customize its behavior based on the environment it runs in (e.g., production, staging, development). They can also be used to differentiate releases based on factors like:
+
+* **Country:** Different server URLs for Asia and Europe.
+* **User groups:** Different API keys for different user groups.
+* **Functionality:** Remove or add functionality based on legal requirements in certain countries.
+
+Environment variables are typically stored inside a `.env` file, which is a plain text file containing key-value pairs. Each line in the file represents one variable and its corresponding value.
+
+There are various plugins to work with `.env` files, both on the client (app) and server side.
+On the app side, it's crucial to:
+
+1. **Check for Missing Values:** Verify that all necessary environment variables have been added to the `.env` file.
+2. **Validate Values:** Ensure the retrieved values are valid (not null or empty).
+3. **Throw Exceptions:** If any variables are missing or invalid, throw an exception to prevent the app from running with potentially incorrect configurations.
+
+
+```dart
+  void _validateVar(String name, String? value) {
+    if (value == null || value.isEmpty) {
+      throw Exception('Missing or invalid .env: $name');
+    }
+  }
+```
+
+For most projects I've worked on, this Environment contract has proven sufficient:
+```dart
+abstract class Environment {
+  void operator []=(String name, String? value);
+  String operator [](String name);
+  Map<String, String> get asMap;
+  /// must validate every variable during the load
+  Future<bool> load(List<String> variables);
+}
+```
+
+(not used in this project example)
+The other useful thing you can do with Environment is proxy:
+```dart
+  void operator []=(String name, String? value) {
+    _validateVar(name, value);
+    if (_canBeUpdated(name)) {
+      _box.put(name, value!);
+    }
+  }
+```
+
+### .env for this project example
+
+In this example, I've created an app asset `.env` with this content:
+```shell
+DOMAIN_URL=https://bazilodestar.com
+# TODO
+SECONDARY_DOMAIN_URL=https://bazilodestar.com
+SENTRY_DSN=https://53350b430e17b2286ac56ad9ee41a293@o379920.ingest.us.sentry.io/4506893446414336
+```
+And used plugin [flutter_dotenv](https://pub.dev/packages/flutter_dotenv) to load it with a wrapper in `lib/config/env/plugins/flutter_dotenv.dart`
+
+@TODO:
 ## Native Splash Preservation
 
 ## Logger
