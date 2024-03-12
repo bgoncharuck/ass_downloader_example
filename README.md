@@ -143,9 +143,54 @@ Then you can use it like this:
     arguments: 'assets/images...',
   );
 ```
-@TODO:
 ## Dividing screen logic from its design
 
+UI implementations are susceptible to frequent changes. This includes not only the visual design but also aspects like asset usage, adaptability, and accessibility, which continuously evolve. With advancements like code-push and server-driven UI, app design can become even more dynamic than previously anticipated.
+
+Therefore,  separating the logic of each screen from its UI becomes crucial. This project demonstrates this concept using Screen Controllers and their Locators.
+
+For example, if I know that we'll need to remove native splash no matter what design will be in the future, then I'm adding it into the LoadingScreenController:
+```dart
+  void init() {
+    if (super.initOnce) {
+      return;
+    }
+    const RemoveNativeSplash().execute();
+  }
+```
+
+And using it in the LoadingScreen:
+```dart
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (mounted) {
+      LoadingScreenLocator.of(context).init();
+    }
+```
+
+Or if I know that asset groups will be displayed on the DownloadGroupScreen, I am adding them into DownloadGroupScreenController regardless of the current UI implementation. 
+For now it's a SliverList builder, but in the future it can be a grid view or something more complex:
+```dart
+SliverList.builder(
+                itemCount: screenController.assetGroups.length,
+                itemBuilder: (_, index) {
+                  final groupKey =
+                      screenController.assetGroups.keys.elementAt(index);
+```
+
+Or if I use route navigation arguments extensively, it makes sense to put this logic into the controller:
+```dart
+  void selectAssetGroup(BuildContext context, String assetGroupName) {
+    Navigator.of(context).pushNamed(
+      pathGroup,
+      arguments: [
+        downloadGroup,
+        assetGroupName,
+      ],
+    );
+```
+
+@TODO:
 ## .env
 
 ## Native Splash Preservation
