@@ -249,9 +249,41 @@ SENTRY_DSN=https://53350b430e17b2286ac56ad9ee41a293@o379920.ingest.us.sentry.io/
 ```
 And used plugin [flutter_dotenv](https://pub.dev/packages/flutter_dotenv) to load it with a wrapper in `lib/config/env/plugins/flutter_dotenv.dart`
 
-@TODO:
 ## Native Splash Preservation
 
+Native splash screen preservation is a technique that maintains the display of the native splash screen until the Flutter application has fully initialized. This ensures a smoother and more cohesive user experience.
+
+**Why**
+
+* **Smooth transition:** Users experience a consistent visual transition from the native splash screen to the Flutter UI, enhancing the app's perceived polish and readiness.
+* **Faster load time perception:** Displaying the native splash screen creates the impression of a quicker launch, even if background initialization tasks are ongoing. Users often perceive faster loading times with visual feedback like a splash screen, compared to a blank screen during the loading process.
+
+Several plugins implement this this techniques, both natively on Android and iOS and as flutter plugins. In this project, I use the [flutter_native_splash](https://pub.dev/packages/flutter_native_splash) package.
+
+The plugin utilizes `widgetBinding` for its functionality. Therefore, it's recommended to create an extension for this purpose:
+```dart
+bool _splashScreenStopped = false;
+
+extension NativeSplashPreservation on WidgetsBinding {
+  void preserveSplashScreen() {
+    FlutterNativeSplash.preserve(widgetsBinding: this);
+  }
+
+  void removeSplashScreen() {
+    /// native splash can be removed only once
+    if (_splashScreenStopped) {
+      return;
+    }
+    FlutterNativeSplash.remove();
+    _splashScreenStopped = true;
+  }
+}
+```
+
+Then call preserveSplashScreen() on widgetsBinding before the app runner and any services initialization/dependency injection tasks.
+And removeSplashScreen() after the first app screen is fully initialized.
+
+@TODO:
 ## Logger
 
 ## App Initialization
