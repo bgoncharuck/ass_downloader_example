@@ -24,7 +24,7 @@ class DIAssetsManager implements AssetsManager {
 
   @override
   Future<DownloadResult> syncDownloadGroup({
-    required List<DownloadGroup> groups,
+    required Iterable<DownloadGroup> groups,
     required List<String> appDomains,
     String? id,
   }) async {
@@ -33,6 +33,16 @@ class DIAssetsManager implements AssetsManager {
     /// select best domain and init download groups with it
     final reachableDomains = await connectionChecker.isConnected(appDomains);
     if (reachableDomains.isEmpty) {
+      /// check if app can be used offline
+      final canBeUsedOffline = await checkIfFilesAreAlreadyDownloaded(
+        groups: groups,
+        appDomains: appDomains,
+        id: uniqueId,
+      );
+      if (canBeUsedOffline != null) {
+        return canBeUsedOffline;
+      }
+
       return DownloadResult(
         id: uniqueId,
         url: '',
@@ -92,6 +102,29 @@ class DIAssetsManager implements AssetsManager {
       /// you can use FilesWereDownloadedSuccessfully if needed
       status: const DownloadSuccess(),
     );
+  }
+
+  Future<DownloadResult?> checkIfFilesAreAlreadyDownloaded({
+    required Iterable<DownloadGroup> groups,
+    required List<String> appDomains,
+    required String id,
+  }) async {
+    for (final group in groups) {
+      group.init(appDomains.first);
+    }
+    final listOfFiles = [
+      for (final group in groups)
+        for (final aGroup in group.assets.values) ...aGroup.urls,
+    ];
+
+    final missingFiles = await findMissingFileUrls(listOfFiles);
+    if (missingFiles.isEmpty) {
+      return DownloadResult(
+        id: id,
+        url: '',
+        status: FilesAlreadyDownloaded(fileUrls: listOfFiles),
+      );
+    }
   }
 
   DownloadResult errorPriority(List<DownloadResult> results, String id) {

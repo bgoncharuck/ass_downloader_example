@@ -20,7 +20,7 @@ class SyncAssets with IUseCase<void, DownloadResult> {
       ];
 
       return await assetsManager!.syncDownloadGroup(
-        groups: downloadGroups.values.toList(),
+        groups: downloadGroups.values,
         appDomains: appDomains,
       );
     } catch (e, t) {

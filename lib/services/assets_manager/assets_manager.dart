@@ -6,7 +6,7 @@ AssetsManager? assetsManager;
 
 abstract class AssetsManager {
   Future<DownloadResult> syncDownloadGroup({
-    required List<DownloadGroup> groups,
+    required Iterable<DownloadGroup> groups,
     required List<String> appDomains,
     String? id,
   });
