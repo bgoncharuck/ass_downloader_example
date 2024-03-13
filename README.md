@@ -494,11 +494,11 @@ abstract class DownloadStrategy {
 }
 ```
 
-## Assets Manager
-
 ## Asset Group
 
-## DownloadGroup
+## Download Group
+
+## Assets Manager
 
 ## Image Assets Group
 
