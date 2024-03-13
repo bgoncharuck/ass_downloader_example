@@ -283,22 +283,216 @@ extension NativeSplashPreservation on WidgetsBinding {
 Then call preserveSplashScreen() on widgetsBinding before the app runner and any services initialization/dependency injection tasks.
 And removeSplashScreen() after the first app screen is fully initialized.
 
-@TODO:
 ## Logger
+Logs are essential for pinpointing the root cause of crashes, errors, and unexpected behavior in an application.
 
-## App Initialization
+While using print statements to the console is a common practice for developers, it's not ideal for production environments due to:
+* **Potential exposure of sensitive information**: Printing sensitive data to the console can be a security risk.
+* **Performance impact**: Printing to the console adds overhead and can slow down the app's execution.
+
+This is easily solved with `debugPrint` over `print` as it only runs in debug mode.
+
+The other problem with printing into the console, is that you won't see prints inside the user app that runs on user's device.
+This is why solutions like Firebase Crashlytics, Sentry and many other tools exist for this purpose.
+
+They are also can watch for crashes in the real time and tell exactly where exception happened and it's stacktrace.
+
+For small projects one such service is enough, but the more complex app becomes, the more services for debugging, other logs or even analytics SDKs you'll need to use.
+
+The facade pattern provides a clean approach to manage multiple logging services starting from less in the start, and adding more in the future. 
+Here's an example implementation:
+```dart
+/// contract
+abstract class LoggingLibrary {
+  Future<void> exception(Object e, StackTrace t);
+  Future<void> message(String message);
+}
+
+/// implementations
+//...
+class DebugPrintLogging implements LoggingLibrary {
+//...
+class SentryLogging implements LoggingLibrary {
+//...
+class FirebaseLogging implements LoggingLibrary {
+```
+
+Then you can use facade composition to log into multiple libraries at once:
+```dart
+class MultipleLibrariesLogging implements LoggingLibrary {
+  final Iterable<LoggingLibrary> libraries = [
+    const SentryLogging(),
+    if (kDebugMode) const DebugPrintLogging(),
+  ];
+
+  @override
+  Future<void> exception(Object e, StackTrace t) async {
+    for (final lib in libraries) {
+      await lib.exception(e, t);
+    }
+  }
+
+  @override
+  Future<void> message(String message) async {
+    for (final lib in libraries) {
+      await lib.message(message);
+    }
+  }
+}
+```
+
+You can do the same for any analytics services with a more complex [contract](https://github.com/bgoncharuck/use_cases/blob/main/services/analytics/facade.dart).
+
+## App Initialization (Config) Module
+
+While cramming all initialization logic into a single `main()` function might seem like a simpler initial approach, it leads to several critical issues down the road:
+
+- **Circular Dependencies:** Services and configurations can become entangled, leading to situations where components rely on each other's initialization before they themselves are fully initialized. This creates a deadlock and prevents the app from starting.
+- **Complicated Logic:** A single `main()` function quickly becomes cluttered and difficult to understand as the app grows. Complex initialization steps become interwoven, making maintenance and debugging a nightmare.
+- **Spaghetti Code:** The lack of clear separation promotes messy and unstructured code. Refactoring or modifying functionalities becomes a significant challenge due to the interconnected nature of the codebase.
+- **Main Maintainability:** Perhaps the most crucial aspect - a single, monolithic `main()` function significantly hinders long-term maintainability. Adding new features or modifying existing ones becomes a daunting task due to the difficulty of isolating changes and potential ripple effects.
+
+To address these challenges and ensure a clean, maintainable, and scalable codebase, separating the initialization logic is essential. This involves creating a dedicated configuration layer responsible for initializing:
+
+- **Individual Services:** Each service within the app should have its own initialization routine, allowing for independent setup and configuration.
+- **App Dependencies:** Dependencies required by the application should also be explicitly initialized within the configuration layer.
+- **App Itself:** Finally, the actual application initialization, including setting up widgets and routing, can be handled within a designated section.
+
+Example of configuration routines:
+```dart
+/// params is `runApp` function
+class InitializeApp with IUseCase<void Function(), void> {
+  const InitializeApp();
+  @override
+  Future<void> execute({required void Function() params}) async {
+    await const ConfigWidgetsBinding().execute();
+    await const InitializeEnvironment().execute(
+      params: [
+        'DOMAIN_URL',
+        'SECONDARY_DOMAIN_URL',
+        'SENTRY_DSN',
+      ],
+    );
+    await const InitializeLogger().execute();
+
+    await const SetCrashWatcherOverAppRunner().execute(
+      params: params,
+    );
+  }
+}
+
+Future<void> main() async {
+  await const InitializeApp().execute(
+    params: () => runApp(
+      const App(),
+    ),
+  );
+}
+```
+
+By separating initialization logic like this, you gain several advantages:
+- **Improved Modularity**: Each configuration step becomes a discrete unit, promoting better code organization and easier comprehension.
+- **Enhanced Maintainability**: Changes or additions to specific functionalities are isolated, making the codebase more manageable in the long run.
+- **Scalability**: As the app grows in complexity, the configuration layer can be easily extended to accommodate new requirements.
+
+In essence, separating initialization logic is an investment **in the future** of your application. It promotes cleaner code, simplifies maintenance, and paves the way for a more scalable and sustainable codebase.
 
 ## Internet Connection Check
 
+Before initiating a download, it's crucial to verify that the user's device has an active internet connection. If no connection is detected, the application must inform the user and provide an option to retry the download once they are connected. This ensures a smooth user experience by preventing download attempts that would ultimately fail due to lack of internet access.
+
+Maintaining high availability and reliability often involves utilizing multiple server domains. This strategy mitigates the potential impact of single-point failures. A domain can become unavailable for various reasons, such as expired payment or maintenance downtime.
+
+For this exact reason we are checking the connection to our domains before downloading files.
+Ideally, we choose what connection is the fastest but it's out of the scope of this example project.
+
+In this project I use a simple HTTP ping strategy for checking server connection status. It sends HTTP GET requests to each provided URL and checks the response status code. If the status code is 200 (OK), it considers the server reachable:
+```dart
+final futures = <Future<String>>[];
+
+for (final url in urls) {
+  futures.add((url) {
+    final response = await http.get(Uri.parse(url));
+    return response.statusCode == 200 ? url : '';
+  });
+}
+
+final availableDomains = <String>[];
+try {
+  availableDomains.addAll(await Future.wait(futures));
+} catch (e, t) {
+  await log.exception(e, t);
+}
+return availableDomains.where((domain) => domain.isNotEmpty).toList();
+```
+
 ## Path Manager
 
-## Download Status
+It's crucial to efficiently handle asset paths, where files will be downloaded, how to extract filename from url, how to know if file is already downloaded into the path.
 
-## Download Result
+Everything related to the path, file name, extracting file name from the url must be done in a separate module.
 
+For most apps the simple checks of file existence in the app directory is enough.
+But for some, this module evolves to the usage of virtual file system, directory view models, complex path visitors and regex scripts.
+
+For the general purpose the module can have this contract:
+- Ability to check whether a file with a given name already exists.
+- Retrieval of the directory where files will be downloaded to.
+- Generation of file save paths based on file names.
+- Mapping between file names and their respective paths.
+- Extraction of file names from URLs for path retrieval.
+
+```dart
+abstract class AssetPath {
+  Future<bool> exists(String fileName);
+
+  /// directory where files can be downloaded to
+  Future<String> get savePath;
+  Future<String> fileSavePath(String fileName);
+  String? getFilePath(String fileName);
+  String getFileNameFromUrl(String url);
+  String? getFilePathByUrl(String url);
+  void put(String fileName, String filePath);
+}
+```
 ## Download Strategy
 
-## Download Strategies
+There are various ways to download a file.
+From spawning isolates with [dedicated workers](https://github.com/bgoncharuck/use_cases/tree/main/services/isolate/modified_worker_pattern) and its IDs, creating [background services](https://github.com/bgoncharuck/use_cases/tree/main/services/isolate/producer_consumer_pattern) to simply downloading file using a future which is sufficient for small apps like this one:
+
+```dart
+try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode != 200) {
+        await log.message('Download failed, ${response.statusCode}, $path');
+        return DownloadResult(
+          status: const DownloadError(),
+        );
+      }
+
+      final file = await File(path).create(recursive: true);
+      await file.writeAsBytes(response.bodyBytes);
+      return DownloadResult(
+        status: const DownloadSuccess(),
+      );
+    } catch (e, t) {
+      await log.exception(e, t);
+    }
+```
+
+This code demonstrates a straightforward download implementation using a Future. It fetches the file from the provided URL, checks the response status code, creates the necessary file, and writes the downloaded data.
+
+Despite utilizing a simpler approach for this project, it's valuable to acknowledge the potential need for a more flexible solution in the future. Introducing the Strategy pattern provides a foundation for implementing different download approaches based on the application or feature requirements.
+
+```dart
+abstract class DownloadStrategy {
+  Future<DownloadResult> downloadFile({
+    required String url,
+    required String path,
+    String? id,
+  });
+}
+```
 
 ## Assets Manager
 
