@@ -455,14 +455,44 @@ abstract class AssetPath {
   void put(String fileName, String filePath);
 }
 ```
-
-## Download Status
-
-## Download Result
-
 ## Download Strategy
 
-## Download Strategies
+There are various ways to download a file.
+From spawning isolates with [dedicated workers](https://github.com/bgoncharuck/use_cases/tree/main/services/isolate/modified_worker_pattern) and its IDs, creating [background services](https://github.com/bgoncharuck/use_cases/tree/main/services/isolate/producer_consumer_pattern) to simply downloading file using a future which is sufficient for small apps like this one:
+
+```dart
+try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode != 200) {
+        await log.message('Download failed, ${response.statusCode}, $path');
+        return DownloadResult(
+          status: const DownloadError(),
+        );
+      }
+
+      final file = await File(path).create(recursive: true);
+      await file.writeAsBytes(response.bodyBytes);
+      return DownloadResult(
+        status: const DownloadSuccess(),
+      );
+    } catch (e, t) {
+      await log.exception(e, t);
+    }
+```
+
+This code demonstrates a straightforward download implementation using a Future. It fetches the file from the provided URL, checks the response status code, creates the necessary file, and writes the downloaded data.
+
+Despite utilizing a simpler approach for this project, it's valuable to acknowledge the potential need for a more flexible solution in the future. Introducing the Strategy pattern provides a foundation for implementing different download approaches based on the application or feature requirements.
+
+```dart
+abstract class DownloadStrategy {
+  Future<DownloadResult> downloadFile({
+    required String url,
+    required String path,
+    String? id,
+  });
+}
+```
 
 ## Assets Manager
 
