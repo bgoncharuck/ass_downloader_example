@@ -343,7 +343,59 @@ class MultipleLibrariesLogging implements LoggingLibrary {
 
 You can do the same for any analytics services with a more complex [contract](https://github.com/bgoncharuck/use_cases/blob/main/services/analytics/facade.dart).
 
-## App Initialization
+## App Initialization (Config) Module
+
+While cramming all initialization logic into a single `main()` function might seem like a simpler initial approach, it leads to several critical issues down the road:
+
+- **Circular Dependencies:** Services and configurations can become entangled, leading to situations where components rely on each other's initialization before they themselves are fully initialized. This creates a deadlock and prevents the app from starting.
+- **Complicated Logic:** A single `main()` function quickly becomes cluttered and difficult to understand as the app grows. Complex initialization steps become interwoven, making maintenance and debugging a nightmare.
+- **Spaghetti Code:** The lack of clear separation promotes messy and unstructured code. Refactoring or modifying functionalities becomes a significant challenge due to the interconnected nature of the codebase.
+- **Main Maintainability:** Perhaps the most crucial aspect - a single, monolithic `main()` function significantly hinders long-term maintainability. Adding new features or modifying existing ones becomes a daunting task due to the difficulty of isolating changes and potential ripple effects.
+
+To address these challenges and ensure a clean, maintainable, and scalable codebase, separating the initialization logic is essential. This involves creating a dedicated configuration layer responsible for initializing:
+
+- **Individual Services:** Each service within the app should have its own initialization routine, allowing for independent setup and configuration.
+- **App Dependencies:** Dependencies required by the application should also be explicitly initialized within the configuration layer.
+- **App Itself:** Finally, the actual application initialization, including setting up widgets and routing, can be handled within a designated section.
+
+Example of configuration routines:
+```dart
+/// params is `runApp` function
+class InitializeApp with IUseCase<void Function(), void> {
+  const InitializeApp();
+  @override
+  Future<void> execute({required void Function() params}) async {
+    await const ConfigWidgetsBinding().execute();
+    await const InitializeEnvironment().execute(
+      params: [
+        'DOMAIN_URL',
+        'SECONDARY_DOMAIN_URL',
+        'SENTRY_DSN',
+      ],
+    );
+    await const InitializeLogger().execute();
+
+    await const SetCrashWatcherOverAppRunner().execute(
+      params: params,
+    );
+  }
+}
+
+Future<void> main() async {
+  await const InitializeApp().execute(
+    params: () => runApp(
+      const App(),
+    ),
+  );
+}
+```
+
+By separating initialization logic like this, you gain several advantages:
+- **Improved Modularity**: Each configuration step becomes a discrete unit, promoting better code organization and easier comprehension.
+- **Enhanced Maintainability**: Changes or additions to specific functionalities are isolated, making the codebase more manageable in the long run.
+- **Scalability**: As the app grows in complexity, the configuration layer can be easily extended to accommodate new requirements.
+
+In essence, separating initialization logic is an investment **in the future** of your application. It promotes cleaner code, simplifies maintenance, and paves the way for a more scalable and sustainable codebase.
 
 ## Internet Connection Check
 
