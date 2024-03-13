@@ -2,6 +2,7 @@ import 'package:ass_downloader_example/services/connection/connection_checker_st
 import 'package:ass_downloader_example/services/logger/logger.dart';
 import 'package:http/http.dart' as http;
 
+/// Checks the connection status of the provided URLs using HTTP ping.
 class HttpPingStrategy implements ConnectionCheckerStrategy {
   const HttpPingStrategy();
 
