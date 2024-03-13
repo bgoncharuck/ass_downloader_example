@@ -1,6 +1,7 @@
 import 'package:ass_downloader_example/services/logger/logger.dart';
 import 'package:flutter/foundation.dart';
 
+/// logs into the system console
 class DebugPrintLogging implements LoggingLibrary {
   const DebugPrintLogging();
 

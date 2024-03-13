@@ -283,8 +283,65 @@ extension NativeSplashPreservation on WidgetsBinding {
 Then call preserveSplashScreen() on widgetsBinding before the app runner and any services initialization/dependency injection tasks.
 And removeSplashScreen() after the first app screen is fully initialized.
 
-@TODO:
 ## Logger
+Logs are essential for pinpointing the root cause of crashes, errors, and unexpected behavior in an application.
+
+While using print statements to the console is a common practice for developers, it's not ideal for production environments due to:
+* **Potential exposure of sensitive information**: Printing sensitive data to the console can be a security risk.
+* **Performance impact**: Printing to the console adds overhead and can slow down the app's execution.
+
+This is easily solved with `debugPrint` over `print` as it only runs in debug mode.
+
+The other problem with printing into the console, is that you won't see prints inside the user app that runs on user's device.
+This is why solutions like Firebase Crashlytics, Sentry and many other tools exist for this purpose.
+
+They are also can watch for crashes in the real time and tell exactly where exception happened and it's stacktrace.
+
+For small projects one such service is enough, but the more complex app becomes, the more services for debugging, other logs or even analytics SDKs you'll need to use.
+
+The facade pattern provides a clean approach to manage multiple logging services starting from less in the start, and adding more in the future. 
+Here's an example implementation:
+```dart
+/// contract
+abstract class LoggingLibrary {
+  Future<void> exception(Object e, StackTrace t);
+  Future<void> message(String message);
+}
+
+/// implementations
+//...
+class DebugPrintLogging implements LoggingLibrary {
+//...
+class SentryLogging implements LoggingLibrary {
+//...
+class FirebaseLogging implements LoggingLibrary {
+```
+
+Then you can use facade composition to log into multiple libraries at once:
+```dart
+class MultipleLibrariesLogging implements LoggingLibrary {
+  final Iterable<LoggingLibrary> libraries = [
+    const SentryLogging(),
+    if (kDebugMode) const DebugPrintLogging(),
+  ];
+
+  @override
+  Future<void> exception(Object e, StackTrace t) async {
+    for (final lib in libraries) {
+      await lib.exception(e, t);
+    }
+  }
+
+  @override
+  Future<void> message(String message) async {
+    for (final lib in libraries) {
+      await lib.message(message);
+    }
+  }
+}
+```
+
+You can do the same for any analytics services with a more complex [contract](https://github.com/bgoncharuck/use_cases/blob/main/services/analytics/facade.dart).
 
 ## App Initialization
 
