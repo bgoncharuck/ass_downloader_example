@@ -445,6 +445,8 @@ For the general purpose the module can have this contract:
 ```dart
 abstract class AssetPath {
   Future<bool> exists(String fileName);
+
+  /// directory where files can be downloaded to
   Future<String> get savePath;
   Future<String> fileSavePath(String fileName);
   String? getFilePath(String fileName);
