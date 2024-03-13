@@ -428,6 +428,32 @@ return availableDomains.where((domain) => domain.isNotEmpty).toList();
 
 ## Path Manager
 
+It's crucial to efficiently handle asset paths, where files will be downloaded, how to extract filename from url, how to know if file is already downloaded into the path.
+
+Everything related to the path, file name, extracting file name from the url must be done in a separate module.
+
+For most apps the simple checks of file existence in the app directory is enough.
+But for some, this module evolves to the usage of virtual file system, directory view models, complex path visitors and regex scripts.
+
+For the general purpose the module can have this contract:
+- Ability to check whether a file with a given name already exists.
+- Retrieval of the directory where files will be downloaded to.
+- Generation of file save paths based on file names.
+- Mapping between file names and their respective paths.
+- Extraction of file names from URLs for path retrieval.
+
+```dart
+abstract class AssetPath {
+  Future<bool> exists(String fileName);
+  Future<String> get savePath;
+  Future<String> fileSavePath(String fileName);
+  String? getFilePath(String fileName);
+  String getFileNameFromUrl(String url);
+  String? getFilePathByUrl(String url);
+  void put(String fileName, String filePath);
+}
+```
+
 ## Download Status
 
 ## Download Result
