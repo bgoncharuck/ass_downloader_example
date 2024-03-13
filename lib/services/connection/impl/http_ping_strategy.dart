@@ -13,13 +13,13 @@ class HttpPingStrategy implements ConnectionCheckerStrategy {
       futures.add(_notPing(url));
     }
 
+    final availableDomains = <String>[];
     try {
-      final availableDomains = await Future.wait(futures);
-      return availableDomains.where((domain) => domain.isNotEmpty).toList();
+      availableDomains.addAll(await Future.wait(futures));
     } catch (e, t) {
       await log.exception(e, t);
-      return [];
     }
+    return availableDomains.where((domain) => domain.isNotEmpty).toList();
   }
 
   Future<String> _notPing(String url) async {

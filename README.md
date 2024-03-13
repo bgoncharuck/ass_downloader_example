@@ -399,6 +399,33 @@ In essence, separating initialization logic is an investment **in the future** o
 
 ## Internet Connection Check
 
+Before initiating a download, it's crucial to verify that the user's device has an active internet connection. If no connection is detected, the application must inform the user and provide an option to retry the download once they are connected. This ensures a smooth user experience by preventing download attempts that would ultimately fail due to lack of internet access.
+
+Maintaining high availability and reliability often involves utilizing multiple server domains. This strategy mitigates the potential impact of single-point failures. A domain can become unavailable for various reasons, such as expired payment or maintenance downtime.
+
+For this exact reason we are checking the connection to our domains before downloading files.
+Ideally, we choose what connection is the fastest but it's out of the scope of this example project.
+
+In this project I use a simple HTTP ping strategy for checking server connection status. It sends HTTP GET requests to each provided URL and checks the response status code. If the status code is 200 (OK), it considers the server reachable:
+```dart
+final futures = <Future<String>>[];
+
+for (final url in urls) {
+  futures.add((url) {
+    final response = await http.get(Uri.parse(url));
+    return response.statusCode == 200 ? url : '';
+  });
+}
+
+final availableDomains = <String>[];
+try {
+  availableDomains.addAll(await Future.wait(futures));
+} catch (e, t) {
+  await log.exception(e, t);
+}
+return availableDomains.where((domain) => domain.isNotEmpty).toList();
+```
+
 ## Path Manager
 
 ## Download Status
