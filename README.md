@@ -575,6 +575,30 @@ class AsianAnimals implements DownloadGroup {
 
 ## Assets Manager
 
+Assets Manager is responsible for keeping the Download and Asset Groups updated with the server, after checking the domain and any other needed dependency.
+And provide correct path for the any given asset from any downloaded Asset Group that can be used inside app services (like sound or image rendering).
+
+Basically speaking Asset Group utilizes Internet Connection Checker, Asset Path Service and Download Strategy interfaces to correctly manage the assets.
+It does not know how to get correct path or download a singular file, since it's out of his responsibility scope.
+
+```dart
+class DIAssetsManager implements AssetsManager {
+  const DIAssetsManager({
+    required this.connectionChecker,
+    required this.downloadStrategy,
+    required this.assetPath,
+  });
+
+  Future<DownloadResult> syncDownloadGroup({
+    required Iterable<DownloadGroup> groups,
+    required List<String> appDomains,
+    String? id,
+  });
+
+  String? getAssetPath(String filename);
+}
+```
+
 ## Image Assets Group
 
 ## Precache Image into Context (No Blinks)
