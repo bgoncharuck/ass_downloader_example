@@ -496,6 +496,53 @@ abstract class DownloadStrategy {
 
 ## Asset Group
 
+The Asset Group concept serves a dual purpose within your application:
+- It acts as a container for a collection of related files. These files are assigned clear and descriptive names, for best code readability and maintainability. This structure simplifies the process of locating and utilizing these assets within your project.
+- It establishes a well-defined interface for downloading a specific set of app assets. This interface promotes flexibility and allows for the implementation of different download strategies based on the application's requirements.
+
+Usage examples:
+- GameLevelAssetGroup can represent the assets associated with a single level within a game. This could encompass textures, models, sound effects, and music specific to that particular level.
+- ModuleAssetGroup can be used to group the assets belonging to each module. This facilitates efficient management and loading of assets relevant to each module's functionality.
+- MenuScreenSoundsAssetGroup to organize assets like music and sound effects used specifically in the app's menu or home screen. This approach promotes better organization and simplifies the process of managing these distinct asset categories.
+
+The core contract for the AssetGroup class, which has proven sufficient for most applications:
+```dart
+abstract class AssetGroup {
+  /// Each group must have a unique and descriptive name for identification.
+  String get groupName;
+
+  /// Base URL: The concrete implementation's constructor must provide a base URL. This can be a domain address or a path prefix used to construct the complete download URLs for the assets within the group.
+  String get baseUrl;
+
+  /// List of Assets: This property exposes a list of asset names or relative paths within the group. This list serves as the source for generating download URLs and managing the assets associated with this group.
+  Iterable<String> get assets;
+
+  /// Download URLs: This property provides a collection of URLs derived from the `assets` list and potentially combined with the `baseUrl`. These URLs represent the locations from where the assets can be downloaded.
+  Iterable<String> get urls;
+}
+```
+
+Which can later be extended based on the category of asset group:
+```dart
+class ImageAssetGroup extends DefaultAssetGroup {
+  /// Additional properties specific to image assets
+  final double width;
+  final double height;
+}
+
+class SoundsAssetGroup extends DefaultAssetGroup {
+  /// Additional properties specific to sound assets
+  final bool isLooped;
+  final Order order; // Enum representing the playback order (e.g., sequential, random)
+}
+
+class CertificateAssetGroup extends DefaultAssetGroup {
+  /// Additional properties specific to certificate assets
+  final String issuedBy;
+  final DateTime issueDate;
+}
+```
+
 ## Download Group
 
 ## Assets Manager
