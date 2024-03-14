@@ -10,7 +10,7 @@ class MenuScreenController extends ScreenController {
   void selectAssetGroups(BuildContext context, String assetGroupsName) {
     //
     Navigator.of(context).pushNamed(
-      pathGroups,
+      pathDownloadGroups,
       arguments: downloadGroups[assetGroupsName],
     );
   }

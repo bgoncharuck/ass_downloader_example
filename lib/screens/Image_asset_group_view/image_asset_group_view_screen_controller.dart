@@ -18,7 +18,7 @@ class ImageAssetGroupViewScreenController extends ScreenController {
 
   void back(BuildContext context) {
     Navigator.of(context).pushNamed(
-      pathGroups,
+      pathDownloadGroups,
       arguments: fromDownloadGroup,
     );
   }
