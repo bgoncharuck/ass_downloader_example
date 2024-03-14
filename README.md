@@ -589,7 +589,7 @@ class DIAssetsManager implements AssetsManager {
     required this.assetPath,
   });
 
-  Future<DownloadResult> syncDownloadGroup({
+  Future<DownloadResult> syncDownloadGroups({
     required Iterable<DownloadGroup> groups,
     required List<String> appDomains,
     String? id,

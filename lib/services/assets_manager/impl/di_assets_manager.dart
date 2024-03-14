@@ -23,7 +23,7 @@ class DIAssetsManager implements AssetsManager {
   final AssetPath assetPath;
 
   @override
-  Future<DownloadResult> syncDownloadGroup({
+  Future<DownloadResult> syncDownloadGroups({
     required Iterable<DownloadGroup> groups,
     required List<String> appDomains,
     String? id,
