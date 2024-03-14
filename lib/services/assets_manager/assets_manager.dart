@@ -5,7 +5,7 @@ import 'package:ass_downloader_example/models/download_group.dart';
 AssetsManager? assetsManager;
 
 abstract class AssetsManager {
-  Future<DownloadResult> syncDownloadGroup({
+  Future<DownloadResult> syncDownloadGroups({
     required Iterable<DownloadGroup> groups,
     required List<String> appDomains,
     String? id,

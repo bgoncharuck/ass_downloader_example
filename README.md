@@ -433,7 +433,7 @@ It's crucial to efficiently handle asset paths, where files will be downloaded, 
 Everything related to the path, file name, extracting file name from the url must be done in a separate module.
 
 For most apps the simple checks of file existence in the app directory is enough.
-But for some, this module evolves to the usage of virtual file system, directory view models, complex path visitors and regex scripts.
+But for some, this module evolves to the usage of [virtual file system](https://github.com/bgoncharuck/use_cases/tree/main/services/virtual_file_system), directory view models, complex path visitors and regex scripts.
 
 For the general purpose the module can have this contract:
 - Ability to check whether a file with a given name already exists.
@@ -494,12 +494,153 @@ abstract class DownloadStrategy {
 }
 ```
 
-## Assets Manager
-
 ## Asset Group
 
-## DownloadGroup
+The Asset Group concept serves a dual purpose within your application:
+- It acts as a container for a collection of related files. These files are assigned clear and descriptive names, for best code readability and maintainability. This structure simplifies the process of locating and utilizing these assets within your project.
+- It establishes a well-defined interface for downloading a specific set of app assets. This interface promotes flexibility and allows for the implementation of different download strategies based on the application's requirements.
 
-## Image Assets Group
+Usage examples:
+- GameLevelAssetGroup can represent the assets associated with a single level within a game. This could encompass textures, models, sound effects, and music specific to that particular level.
+- ModuleAssetGroup can be used to group the assets belonging to each module. This facilitates efficient management and loading of assets relevant to each module's functionality.
+- MenuScreenSoundsAssetGroup to organize assets like music and sound effects used specifically in the app's menu or home screen. This approach promotes better organization and simplifies the process of managing these distinct asset categories.
+
+The core contract for the AssetGroup class, which has proven sufficient for most applications:
+```dart
+abstract class AssetGroup {
+  /// Each group must have a unique and descriptive name for identification.
+  String get groupName;
+
+  /// Base URL: The concrete implementation's constructor must provide a base URL. This can be a domain address or a path prefix used to construct the complete download URLs for the assets within the group.
+  String get baseUrl;
+
+  /// List of Assets: This property exposes a list of asset names or relative paths within the group. This list serves as the source for generating download URLs and managing the assets associated with this group.
+  Iterable<String> get assets;
+
+  /// Download URLs: This property provides a collection of URLs derived from the `assets` list and potentially combined with the `baseUrl`. These URLs represent the locations from where the assets can be downloaded.
+  Iterable<String> get urls;
+}
+```
+
+Which can later be extended based on the category of asset group:
+```dart
+class ImageAssetGroup extends DefaultAssetGroup {
+  /// Additional properties specific to image assets
+  final double width;
+  final double height;
+}
+
+class SoundsAssetGroup extends DefaultAssetGroup {
+  /// Additional properties specific to sound assets
+  final bool isLooped;
+  final Order order; // Enum representing the playback order (e.g., sequential, random)
+}
+
+class CertificateAssetGroup extends DefaultAssetGroup {
+  /// Additional properties specific to certificate assets
+  final String issuedBy;
+  final DateTime issueDate;
+}
+```
+
+## Download Group
+
+The DownloadGroup introduces functionalities for managing a collection of related asset groups:
+- **Ordered Download Management**: The DownloadGroup facilitates the organization and prioritization of asset group downloads. This allows you to specify the download order for different asset groups within the application.
+- **Domain Configuration**: The ability to configure a common domain URL for all asset groups within a DownloadGroup simplifies the process of managing download locations. This centralized configuration reduces the need to set the domain URL individually for each AssetGroup.
+- **Conditional Initialization**: The DownloadGroup can incorporate logic for initializing specific asset groups based on pre-defined rules. This enables selective loading of assets depending on the application's current state or user preferences.
+- **Dependency Injection**: The DownloadGroup can be designed to handle the initialization of assets using a chosen dependency injection approach. This promotes code modularity and testability.
+
+DownloadGroup example:
+```dart
+class AsianAnimals implements DownloadGroup {
+  String get name => 'Asian Animals';
+  Map<String, AssetGroup> assets = {};
+  void init(String domain) {
+    assets.addAll({
+      /// image asset groups
+      'tiger': TigerAssetGroup(domain),
+      if (chinese)
+      'rabbit': RabbitAssetGroup(domain),
+      if (vietnamese)
+      'cat': CatAssetGroup(domain),
+      'dragon': DragonAssetGroup(domain),
+      'snake': SnakeAssetGroup(domain),
+      'horse': HorseAssetGroup(domain),
+      ///...
+    });
+  }
+}
+```
+
+## Assets Manager
+
+Assets Manager is responsible for keeping the Download and Asset Groups updated with the server, after checking the domain and any other needed dependency.
+And provide correct path for the any given asset from any downloaded Asset Group that can be used inside app services (like sound or image rendering).
+
+Basically speaking Asset Group utilizes Internet Connection Checker, Asset Path Service and Download Strategy interfaces to correctly manage the assets.
+It does not know how to get correct path or download a singular file, since it's out of his responsibility scope.
+
+```dart
+class DIAssetsManager implements AssetsManager {
+  const DIAssetsManager({
+    required this.connectionChecker,
+    required this.downloadStrategy,
+    required this.assetPath,
+  });
+
+  Future<DownloadResult> syncDownloadGroups({
+    required Iterable<DownloadGroup> groups,
+    required List<String> appDomains,
+    String? id,
+  });
+
+  String? getAssetPath(String filename);
+}
+```
 
 ## Precache Image into Context (No Blinks)
+
+When using images in Flutter, you might encounter a brief visual glitch or "blink" during the initial rendering process, especially on older or less powerful devices.
+To prevent this undesirable flicker and ensure a seamless user experience, you use the precacheImage function. This function preloads the image asset into the image cache, making it readily available for immediate rendering when needed.
+
+The precaching process is typically incorporated within the onDidChangeDependencies method of the widget that utilizes the image asset. This method is invoked whenever the widget's dependencies change, providing an ideal opportunity to preload the image.
+
+```dart
+@override
+void onDidChangeDependencies() {
+  precacheImage(image, context);
+  super.onDidChangeDependencies();
+}
+```
+
+In this project I use a Widget that does it automatically and also gets the image path from the AssetManager based on provided asset name:
+```dart
+  const CachedAssetImage(
+    this.asset, {
+    this.width,
+    this.height,
+    this.fit = BoxFit.fitWidth,
+    super.key,
+  });
+  ///...
+  late final Image cachedImage;
+  ///...
+  void initState() {
+    final path = assetsManager?.getAssetPath('/${widget.asset}');
+    if (path == null) {
+      cachedImage = Image.asset(
+        'assets/no_image.png',
+      );
+    } else {
+      cachedImage = Image.file(
+        File(path),
+      );
+    }
+  }
+  ///...
+  void didChangeDependencies() {
+    precacheImage(cachedImage.image, context);
+  }
+  Widget build(BuildContext context) => cachedImage;
+```

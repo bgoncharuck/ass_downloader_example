@@ -19,7 +19,7 @@ class SyncAssets with IUseCase<void, DownloadResult> {
         env['SECONDARY_DOMAIN_URL'],
       ];
 
-      return await assetsManager!.syncDownloadGroup(
+      return await assetsManager!.syncDownloadGroups(
         groups: downloadGroups.values,
         appDomains: appDomains,
       );
