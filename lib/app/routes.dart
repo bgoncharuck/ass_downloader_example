@@ -15,8 +15,8 @@ late final GlobalKey<NavigatorState> navigatorKey;
 
 // Define constants for route paths
 const String pathMenu = '/menu';
-const String pathGroups = '/groups';
-const String pathGroup = '/group';
+const String pathDownloadGroups = '/downloads';
+const String pathAssetGroup = '/group';
 const String pathError = '/error';
 const String pathLoading = '/loading';
 
@@ -45,14 +45,14 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         ),
         child: const MenuScreen(),
       );
-    case pathGroups:
+    case pathDownloadGroups:
       path = DownloadGroupScreenLocator(
         controller: DownloadGroupScreenController(
           downloadGroup: arguments! as DownloadGroup, // Cast arguments
         ),
         child: const DownloadGroupScreen(),
       );
-    case pathGroup:
+    case pathAssetGroup:
       // Handle route with multiple arguments
       path = ImageAssetGroupViewScreenLocator(
         controller: ImageAssetGroupViewScreenController(
