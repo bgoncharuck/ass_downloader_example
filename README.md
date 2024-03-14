@@ -545,6 +545,34 @@ class CertificateAssetGroup extends DefaultAssetGroup {
 
 ## Download Group
 
+The DownloadGroup introduces functionalities for managing a collection of related asset groups:
+- **Ordered Download Management**: The DownloadGroup facilitates the organization and prioritization of asset group downloads. This allows you to specify the download order for different asset groups within the application.
+- **Domain Configuration**: The ability to configure a common domain URL for all asset groups within a DownloadGroup simplifies the process of managing download locations. This centralized configuration reduces the need to set the domain URL individually for each AssetGroup.
+- **Conditional Initialization**: The DownloadGroup can incorporate logic for initializing specific asset groups based on pre-defined rules. This enables selective loading of assets depending on the application's current state or user preferences.
+- **Dependency Injection**: The DownloadGroup can be designed to handle the initialization of assets using a chosen dependency injection approach. This promotes code modularity and testability.
+
+DownloadGroup example:
+```dart
+class AsianAnimals implements DownloadGroup {
+  String get name => 'Asian Animals';
+  Map<String, AssetGroup> assets = {};
+  void init(String domain) {
+    assets.addAll({
+      /// image asset groups
+      'tiger': TigerAssetGroup(domain),
+      if (chinese)
+      'rabbit': RabbitAssetGroup(domain),
+      if (vietnamese)
+      'cat': CatAssetGroup(domain),
+      'dragon': DragonAssetGroup(domain),
+      'snake': SnakeAssetGroup(domain),
+      'horse': HorseAssetGroup(domain),
+      ///...
+    });
+  }
+}
+```
+
 ## Assets Manager
 
 ## Image Assets Group

@@ -15,6 +15,8 @@ import 'package:ass_downloader_example/models/download_groups/asian_animals/tige
 
 final asianAnimals = AsianAnimals();
 
+/// download group of the image asset groups
+/// dedicated to the asian astrology signs
 class AsianAnimals implements DownloadGroup {
   @override
   String get name => 'Asian Animals';
@@ -25,6 +27,7 @@ class AsianAnimals implements DownloadGroup {
   @override
   void init(String domain) {
     assets.addAll({
+      /// image asset groups
       'tiger': TigerAssetGroup(domain),
       'rabbit': RabbitAssetGroup(domain),
       'dragon': DragonAssetGroup(domain),
