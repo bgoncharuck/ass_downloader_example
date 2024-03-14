@@ -599,6 +599,5 @@ class DIAssetsManager implements AssetsManager {
 }
 ```
 
-## Image Assets Group
-
 ## Precache Image into Context (No Blinks)
+
