@@ -433,7 +433,7 @@ It's crucial to efficiently handle asset paths, where files will be downloaded, 
 Everything related to the path, file name, extracting file name from the url must be done in a separate module.
 
 For most apps the simple checks of file existence in the app directory is enough.
-But for some, this module evolves to the usage of virtual file system, directory view models, complex path visitors and regex scripts.
+But for some, this module evolves to the usage of [virtual file system](https://github.com/bgoncharuck/use_cases/tree/main/services/virtual_file_system), directory view models, complex path visitors and regex scripts.
 
 For the general purpose the module can have this contract:
 - Ability to check whether a file with a given name already exists.
