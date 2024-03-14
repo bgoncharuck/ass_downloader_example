@@ -601,3 +601,46 @@ class DIAssetsManager implements AssetsManager {
 
 ## Precache Image into Context (No Blinks)
 
+When using images in Flutter, you might encounter a brief visual glitch or "blink" during the initial rendering process, especially on older or less powerful devices.
+To prevent this undesirable flicker and ensure a seamless user experience, you use the precacheImage function. This function preloads the image asset into the image cache, making it readily available for immediate rendering when needed.
+
+The precaching process is typically incorporated within the onDidChangeDependencies method of the widget that utilizes the image asset. This method is invoked whenever the widget's dependencies change, providing an ideal opportunity to preload the image.
+
+```dart
+@override
+void onDidChangeDependencies() {
+  precacheImage(image, context);
+  super.onDidChangeDependencies();
+}
+```
+
+In this project I use a Widget that does it automatically and also gets the image path from the AssetManager based on provided asset name:
+```dart
+  const CachedAssetImage(
+    this.asset, {
+    this.width,
+    this.height,
+    this.fit = BoxFit.fitWidth,
+    super.key,
+  });
+  ///...
+  late final Image cachedImage;
+  ///...
+  void initState() {
+    final path = assetsManager?.getAssetPath('/${widget.asset}');
+    if (path == null) {
+      cachedImage = Image.asset(
+        'assets/no_image.png',
+      );
+    } else {
+      cachedImage = Image.file(
+        File(path),
+      );
+    }
+  }
+  ///...
+  void didChangeDependencies() {
+    precacheImage(cachedImage.image, context);
+  }
+  Widget build(BuildContext context) => cachedImage;
+```
