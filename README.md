@@ -644,3 +644,16 @@ In this project I use a Widget that does it automatically and also gets the imag
   }
   Widget build(BuildContext context) => cachedImage;
 ```
+
+## Example of adding new Download Group
+
+In this [example](https://github.com/bgoncharuck/ass_downloader_example/pull/10) I added new download group of the assets.
+
+The changes were done inside the `/models` component
+No other files were changed, but **new asset groups were correctly downloaded and showcased inside the app**.
+This demonstrates well-defined component boundaries where despite the limited code modifications, the newly added download group functioned as expected.
+
+The example adheres to the following component cohesion principles:
+- **Reuse/Release Equivalence Principle**: changes that affect the addition, removal, or modification of a download group are likely to be grouped together, promoting maintainability.
+- **Common Closure Principle**: the functionalities related to download group management are encapsulated within the /models component, fostering modularity.
+- **Common Reuse Principle**: the download group concept is likely to be reused for managing various asset groups within the application, reinforcing code reusability.
